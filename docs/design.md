@@ -224,6 +224,7 @@ for (i::number=>names) {
 }
 ```
 
+
 ### while
 ```
 names::ArrayS<string>[] = ["jacob","patrick","alaina","louis"];
