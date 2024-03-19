@@ -85,7 +85,12 @@ cls IntroductionClass {
 
         */
     isNameUnique<boolean>(name::string) {
-        return this.listOfNames.includes(name);
+        for (i::number = 0; i < this.listOfNames.length; i++) {
+            if (this.listOfNames[i] === name) {
+                return false;
+            }
+        }
+        return true;
     }
 
     pub addName<void>(name::string) {
@@ -106,10 +111,13 @@ cls IntroductionClass {
         console.out(`Hello My Name Is (with interpolation) ${this.name}.`)
     }
 
+
     pub viewNameList<void>() {
         console.out(this.listOfNames);
     }
-
+    stat globalMethod<void>() {
+        console.out("this is a static method only available through accessing the class itself");
+    }
 }
 
 pub cls ExampleClass {
@@ -149,6 +157,9 @@ pub cls ExampleClass {
 
     myIntroClass.isNameUnique("jacob");
     //will throw an access error
+
+    IntroductionClass.globalMethod();
+    //outputs "this is a static method only available through accessing the class itself"
 }
 ```
 
@@ -194,6 +205,155 @@ pub name::string = "hello world";
 %   // modulus
 
 ```
+
+### for loops
+
+```
+names::ArrayS<string>[] = ["jacob","patrick","alaina","louis"];
+for (i::number; i < names.length; i++) {
+    console.out(names[i]);
+    //when i = 0 outputs jacob, so on so forth
+}
+
+for (num::string: names) {
+    console.log(num) //jacob patrick 
+}
+
+for (i=>names) {
+    console.log(names[i])
+}
+```
+
+### while
+```
+names::ArrayS<string>[] = ["jacob","patrick","alaina","louis"];
+while (condition) {
+    
+}
+
+```
+
+### hashmaps 
+
+```
+map::HashMap<number> = new HashMap();
+```
+
+#### Hashmap Method
+- set
+- autoSet (automatically compounds)
+- get
+- remove
+- size
+
+### linked lists
+
+```
+listNode::LinkedList<number> = new LinkedList();
+```
+
+#### Linked Lists Methods
+- removeAt
+- removeValue
+- addAt
+- atWhen
+- sort
+- reverse
+
+
+### Arrays
+
+```
+two different types and 2 ways to instantiate both
+
+Static array
+ArrayS
+
+dynamic array
+ArrayD
+
+listOfNames::ArrayD<string>[] = new ArrayD();
+//or can instantiate like this
+listOfNames::ArrayD<string>[] = ["jacob","patrick"];
+METHODS:
+//empty
+//push
+//shift
+//unshift
+//pop
+
+
+listOfOtherNames::ArrayS<string>[] = new ArrayS(5);
+//have to specify length or you can predefine the array as such
+listOfOtherNames::ArrayS<string>[] = ["hello","goodnight"];
+//no methods except mutability at index
+```
+
+#### Dynamic Array Methods
+- push
+- pop
+- unshift
+- shift
+- includes
+- filter
+- forEach
+- map
+- indexOf
+- at
+- copy (full copy)
+- remove (index specific)
+- slice (start,endpoint)
+- reverse
+- toString() (turns everything to string); (like join(""))
+- length
+- append
+
+#### Static Array Methods
+- includes
+- forEach
+- map
+- filter
+- indexOf
+- at
+- copy
+- slice (start,endpoint)
+- reverse
+- length
+- append
+
+### Strings
+
+#### String Methods
+- slice(start,endpoint)
+- toArray (same as split)
+- replace(letter to replace, what to replace it with)
+- upperCase
+- lowerCase
+- UpperCase
+- reverse
+- indexOf
+- length
+- trim
+- append
+- upperCaseAt
+- lowerCaseAt 
+
+### Objects
+
+#### Object Methods
+- Object.from(array).entries
+- Object.from(array).values
+- Object.from(array).keys
+- hasProperty
+- hasValue
+- delete(key) 
+- size
+- instanceOf() //returns inheritence tree
+- copy
+- restrict (immutable)
+- unrestrict
+- isRestricted() boolean
+
 
 ### Error Handling:
 
@@ -253,7 +413,13 @@ pub cls Main {
 }
 ```
 
-### Prototypical Inheritence
+### Prototypical Inheritence is the norm 
+
+## Features
+- prototypical inheritence
+- polymorphism
+- access modifiers
+- static typing 
 
 ## Library Usage:
 
