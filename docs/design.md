@@ -121,6 +121,8 @@ cls IntroductionClass {
 }
 
 pub cls ExampleClass {
+
+    stat Main<void>() {
     myIntroClass::IntroductionClass = new IntroductionClass("jacob","jacoblang11"); //inserted into singular (or constructor) to instantiate for this instance
 
     //because name is not prefixed with pub it will be unaccessible
@@ -145,7 +147,7 @@ pub cls ExampleClass {
 
     myIntroClass.addName("jacob");
     mySecondIntroClass.addName("patrick");
-    
+
     myIntroClass.viewNameList();
     //outputs ["jacob","patrick"];
 
@@ -160,7 +162,77 @@ pub cls ExampleClass {
 
     IntroductionClass.globalMethod();
     //outputs "this is a static method only available through accessing the class itself"
+    }
 }
+```
+#### Another Example
+```
+
+//note that variables declared in methods are block scoped so they dont need any access modifiers
+/*  
+    cls SecondaryClass {
+
+        //this is whats happening, dob is initialized and if a property is not prefixed by an access modifier, its default is private so dob is private
+        //and age is public
+        dob::Date;
+        pub age::number;
+
+        //then singular is the equivalent of constructor() {} in javascript, where those inputted values at the time of class instantiation are inputted at the 
+        //constructor level, so now those variables are inputted as this.age and this.dob the values initialized above
+        singular(age::number,dob::Date) {
+            this.age = age;
+            this.dob = dob;
+        }
+
+        //this multiple method that is built in like the singular method accounts for the case when you want something like a variable or property to be shared 
+        //among all instances of classes, so anything added to the arrayList which is just a dynamic array is shared among all instances of the classes
+        multiple() {
+            //as you can see in order to set the type of the variable arrayList all types are declared with ::
+            pub arrayList::ArrayD<string>[] = new ArrayList();
+        }
+
+        //because this is not prefixed by an access modifier this is a private method
+        addYearToAge<number>(age::number) {
+            //this increments and assigns the incremented value to the this.age variable
+            this.age++=;
+        }
+
+        pub changeDob<void>(date::Date) {
+            this.dob = date;
+        }
+        pub viewDob<Date>() {
+            return this.dob;
+        }
+        //this method is the main method and the stat keyword means static and is inherently public, so this is the method the compiler needs to look for
+    }
+    pub cls Main {
+
+        stat mainMethod<void>() {
+
+            secondary::SecondaryClass = new SecondaryClass(22, 07/18/01);
+            secondInstanceOfSecondary::SecondaryClass =new SecondaryClass(22, 11/08/2001);
+
+            secondary.arrayList.push("jacob");
+            secondInstanceOfSecondary.push("patrick");
+
+            console.log(secondary.arrayList); //outputs ["jacob","patrick"]
+            console.log(secondInstanceOfSecondary.arrayList); //outputs ["jacob","patrick"]
+
+            name::string="jacob lang";
+            console.out(name); //outputs "jacob lang"
+
+            console.out(secondary.age); //outputs 22;
+
+            secondary.addYearToAge();
+            console.out(secondary.age); //outputs 23
+
+            secondary.changeDob("07/18/2001");
+            console.out(secondary.viewDob); //returns 07/18/2001
+
+            console.log(secondary.dob) //throws error because dob is private because all variables and methods are private by default
+        }
+    }
+*/
 ```
 
 ### Class Method Property Naming:
@@ -173,7 +245,7 @@ pub cls ExampleClass {
 
 - pub
 - prot (visible to each class)
-- stat (specific to class only, short for static) (implies public as well so no need to do pub stat)
+- stat (specific to method only, short for static) (implies public as well so no need to do pub stat, just write stat and it is then public specific to that class)
 - no prefix is same as java and is package specific so file only
 - all classes are package-private by default
 - all properties are private by default unless specified as pub
@@ -216,7 +288,7 @@ for (i::number; i < names.length; i++) {
 }
 
 for (num::string: names) {
-    console.log(num) //jacob patrick 
+    console.log(num) //jacob patrick
 }
 
 for (i::number=>names) {
@@ -224,23 +296,24 @@ for (i::number=>names) {
 }
 ```
 
-
 ### while
+
 ```
 names::ArrayS<string>[] = ["jacob","patrick","alaina","louis"];
 while (condition) {
-    
+
 }
 
 ```
 
-### hashmaps 
+### hashmaps
 
 ```
 map::HashMap<number> = new HashMap();
 ```
 
 #### Hashmap Method
+
 - set
 - autoSet (automatically compounds)
 - get
@@ -254,13 +327,13 @@ listNode::LinkedList<number> = new LinkedList();
 ```
 
 #### Linked Lists Methods
+
 - removeAt
 - removeValue
 - addAt
 - atWhen
 - sort
 - reverse
-
 
 ### Arrays
 
@@ -291,6 +364,7 @@ listOfOtherNames::ArrayS<string>[] = ["hello","goodnight"];
 ```
 
 #### Dynamic Array Methods
+
 - push
 - pop
 - unshift
@@ -310,6 +384,7 @@ listOfOtherNames::ArrayS<string>[] = ["hello","goodnight"];
 - append
 
 #### Static Array Methods
+
 - includes
 - forEach
 - map
@@ -325,6 +400,7 @@ listOfOtherNames::ArrayS<string>[] = ["hello","goodnight"];
 ### Strings
 
 #### String Methods
+
 - slice(start,endpoint)
 - toArray (same as split)
 - replace(letter to replace, what to replace it with)
@@ -337,24 +413,24 @@ listOfOtherNames::ArrayS<string>[] = ["hello","goodnight"];
 - trim
 - append
 - upperCaseAt
-- lowerCaseAt 
+- lowerCaseAt
 
 ### Objects
 
 #### Object Methods
+
 - Object.from(array).entries
 - Object.from(array).values
 - Object.from(array).keys
 - hasProperty
 - hasValue
-- delete(key) 
+- delete(key)
 - size
 - instanceOf() //returns inheritence tree
 - copy
 - restrict (immutable)
 - unrestrict
 - isRestricted() boolean
-
 
 ### Error Handling:
 
@@ -414,13 +490,14 @@ pub cls Main {
 }
 ```
 
-### Prototypical Inheritence is the norm 
+### Prototypical Inheritence is the norm
 
 ## Features
+
 - prototypical inheritence
 - polymorphism
 - access modifiers
-- static typing 
+- static typing
 
 ## Library Usage:
 
