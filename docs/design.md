@@ -488,6 +488,7 @@ pub cls Main {
         //outputs "Hello World From My Second Class"
     }
 }
+
 ```
 
 ### Prototypical Inheritence is the norm

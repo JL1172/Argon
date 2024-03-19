@@ -1,25 +1,29 @@
 package Lexer;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// Define token types
 enum TokenType {
-    IDENTIFIER, PUNCTUATION, KEYWORD, COMPOSITE_TYPE, PRIMITIVE_TYPE
+    KEYWORD, IDENTIFIER, PUNCTUATION, PRIMITIVE_TYPE, COMPOSITE_TYPE,
 }
 
+// Define token class
 class Token {
-    TokenType token;
+
+    TokenType type;
     String value;
 
-    Token(TokenType token, String value) {
-        this.token = token;
+    Token(TokenType type, String value) {
+        this.type = type;
         this.value = value;
     }
 }
 
-class Lexer {
+class Analysis {
+
     private static final Pattern[] PATTERNS = {
             Pattern.compile("^(pub|prot|stat|cls|singular|multiple)$"),
             Pattern.compile("^[a-zA-Z_][a-zA-Z0-9_]*$"),
@@ -39,9 +43,7 @@ class Lexer {
 
     static List<Token> tokenize(String sourceCode) {
         List<Token> tokens = new ArrayList<>();
-
         int currentPosition = 0;
-
         while (currentPosition < sourceCode.length()) {
             boolean matched = false;
 
@@ -49,28 +51,49 @@ class Lexer {
                 Matcher matcher = PATTERNS[i].matcher(sourceCode.substring(currentPosition));
                 if (matcher.find()) {
                     String value = matcher.group(0);
-                    tokens.add(new Token(TokenType.values()[i], value));
+                    TokenType tokenType = getTokenTypeForPatternIndex(i);
+                    tokens.add(new Token(tokenType, value));
                     currentPosition += value.length();
                     matched = true;
                     break;
                 }
-            } 
+            }
+
             if (!matched) {
+                // Handle unrecognized characters or tokens
                 throw new RuntimeException("Unexpected character at position " + currentPosition);
             }
         }
 
         return tokens;
     }
+
+    private static TokenType getTokenTypeForPatternIndex(int index) {
+        switch (index) {
+            case 0:
+                return TokenType.KEYWORD;
+            case 1:
+                return TokenType.IDENTIFIER;
+            case 2:
+                return TokenType.PUNCTUATION;
+            case 3:
+                return TokenType.COMPOSITE_TYPE;
+            // Add cases for other token types as needed
+            default:
+                throw new IllegalArgumentException("Invalid pattern index: " + index);
+        }
+    }
 }
 
+// Main class for testing
 public class Main {
+
     public static void main(String[] args) {
-        if (args.length < 1) {
-            System.err.println("Usage: java Main <file_content>");
-            System.exit(1);
+        String sourceCode = "pub cls Main {stat main<void>() {console.out(\"hello world\");}}";
+
+        List<Token> tokens = Analysis.tokenize(sourceCode);
+        for (Token token : tokens) {
+            System.out.println(token.type + ": " + token.value);
         }
-        String fileContent = args[0];
-        System.out.println("File content");
     }
 }
