@@ -219,7 +219,7 @@ for (num::string: names) {
     console.log(num) //jacob patrick 
 }
 
-for (i=>names) {
+for (i::number=>names) {
     console.log(names[i])
 }
 ```
