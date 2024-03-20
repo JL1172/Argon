@@ -1,0 +1,25 @@
+{
+  "name": "argon-lang",
+  "displayName": "Argon",
+  "description": "argon-lang support",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.87.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "argon",
+      "aliases": ["Argon", "argon"],
+      "extensions": [".ar"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "argon",
+      "scopeName": "source.argon",
+      "path": "./syntaxes/argon.tmLanguage.json"
+    }]
+  }
+}
