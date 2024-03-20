@@ -72,19 +72,19 @@ cls IntroductionClass {
             access modifier + variableName(must be camelCase)::ArrayD(dynamic array)<type of composite data type> = new ArrayD();
         */
 
-        pub listOfNames::ArrayD<string>[] = new ArrayD();
+        pub listOfNames::ArrayD[string] = new ArrayD();
     }
 
 
         //method construction
         /*
 
-            access modifier + methodName + <return type of method> + (argument::argumentType) {
+            access modifier + methodName + (argument::argumentType) :: methodType {
 
             }
 
         */
-    isNameUnique<boolean>(name::string) {
+    isNameUnique(name::string) :: boolean {
         for (i::number = 0; i < this.listOfNames.length; i++) {
             if (this.listOfNames[i] === name) {
                 return false;
@@ -93,7 +93,7 @@ cls IntroductionClass {
         return true;
     }
 
-    pub addName<void>(name::string) {
+    pub addName(name::string) :: void{
 
         // note, you never have to add any access modifiers to variables declared inside method because they are block scoped
         if (this.isNameUnique(this.name)) {
@@ -105,24 +105,24 @@ cls IntroductionClass {
 
     }
 
-    pub viewName<void>() {
+    pub viewName()::void {
         console.out("Hello My Name Is: (without concatentation or interpolation)", this.name);
         console.out("Hello My Name Is (with concatenation) " + this.name);
         console.out(`Hello My Name Is (with interpolation) ${this.name}.`)
     }
 
 
-    pub viewNameList<void>() {
+    pub viewNameList() ::void {
         console.out(this.listOfNames);
     }
-    stat globalMethod<void>() {
+    stat globalMethod() ::void {
         console.out("this is a static method only available through accessing the class itself");
     }
 }
 
 pub cls ExampleClass {
 
-    stat Main<void>() {
+    stat Main() :: void {
     myIntroClass::IntroductionClass = new IntroductionClass("jacob","jacoblang11"); //inserted into singular (or constructor) to instantiate for this instance
 
     //because name is not prefixed with pub it will be unaccessible
@@ -192,22 +192,22 @@ pub cls ExampleClass {
         }
 
         //because this is not prefixed by an access modifier this is a private method
-        addYearToAge<number>(age::number) {
+        addYearToAge(age::number) :: number {
             //this increments and assigns the incremented value to the this.age variable
             this.age++=;
         }
 
-        pub changeDob<void>(date::Date) {
+        pub changeDob(date::Date) ::void {
             this.dob = date;
         }
-        pub viewDob<Date>() {
+        pub viewDob() ::Date{
             return this.dob;
         }
         //this method is the main method and the stat keyword means static and is inherently public, so this is the method the compiler needs to look for
     }
     pub cls Main {
 
-        stat mainMethod<void>() {
+        stat mainMethod() :: void {
 
             secondary::SecondaryClass = new SecondaryClass(22, 07/18/01);
             secondInstanceOfSecondary::SecondaryClass =new SecondaryClass(22, 11/08/2001);
@@ -249,6 +249,7 @@ pub cls ExampleClass {
 - no prefix is same as java and is package specific so file only
 - all classes are package-private by default
 - all properties are private by default unless specified as pub
+- there is no package private for fields, properties because of block scope, the only way to expose a method is by making it public
 
 ### properties
 
@@ -281,7 +282,7 @@ pub name::string = "hello world";
 ### for loops
 
 ```
-names::ArrayS<string>[] = ["jacob","patrick","alaina","louis"];
+names::ArrayS[string] = ["jacob","patrick","alaina","louis"];
 for (i::number; i < names.length; i++) {
     console.out(names[i]);
     //when i = 0 outputs jacob, so on so forth
@@ -299,7 +300,7 @@ for (i::number=>names) {
 ### while
 
 ```
-names::ArrayS<string>[] = ["jacob","patrick","alaina","louis"];
+names::ArrayS[string] = ["jacob","patrick","alaina","louis"];
 while (condition) {
 
 }
@@ -309,7 +310,7 @@ while (condition) {
 ### hashmaps
 
 ```
-map::HashMap<number> = new HashMap();
+map::HashMap[number] = new HashMap();
 ```
 
 #### Hashmap Method
@@ -323,7 +324,7 @@ map::HashMap<number> = new HashMap();
 ### linked lists
 
 ```
-listNode::LinkedList<number> = new LinkedList();
+listNode::LinkedList[number] = new LinkedList();
 ```
 
 #### Linked Lists Methods
@@ -346,9 +347,9 @@ ArrayS
 dynamic array
 ArrayD
 
-listOfNames::ArrayD<string>[] = new ArrayD();
+listOfNames::ArrayD[string] = new ArrayD();
 //or can instantiate like this
-listOfNames::ArrayD<string>[] = ["jacob","patrick"];
+listOfNames::ArrayD[string] = ["jacob","patrick"];
 METHODS:
 //empty
 //push
@@ -357,9 +358,9 @@ METHODS:
 //pop
 
 
-listOfOtherNames::ArrayS<string>[] = new ArrayS(5);
+listOfOtherNames::ArrayS[string] = new ArrayS(5);
 //have to specify length or you can predefine the array as such
-listOfOtherNames::ArrayS<string>[] = ["hello","goodnight"];
+listOfOtherNames::ArrayS[string] = ["hello","goodnight"];
 //no methods except mutability at index
 ```
 
@@ -459,7 +460,7 @@ listOfOtherNames::ArrayS<string>[] = ["hello","goodnight"];
 ```
 cls MyClass {
 
-    pub draw<void>() {
+    pub draw()::void {
 
         console.out("Hello world From Jacob");
 
@@ -475,7 +476,7 @@ cls MySecondClass extends MyClass {
 
 pub cls Main {
 
-    stat main<void>() {
+    stat main() :: void {
 
         myFirstClass::MyClass = new MyClass();
 
