@@ -8,20 +8,17 @@ class Token {
     private final Main.TokenType type;
     private final String value;
 
-    // setting those above values
     Token(Main.TokenType type, String value) {
         this.type = type;
         this.value = value;
     }
 
-    // getter function
-    Main.TokenType getType() {
-        return type;
-    }
-
-    // getter function
     String getValue() {
         return value;
+    }
+
+    Main.TokenType getType() {
+        return type;
     }
 
     // overriding the toString() method to be concatenation of type and value;
@@ -34,40 +31,32 @@ class Token {
 }
 
 class Lexer {
-    List<Token> tokenize(String input) {
 
-        // this is the token list ill be returning, its just a dyanamic array with class
-        // Token as its type
+    List<Token> tokenizer(String input) {
+
         List<Token> tokens = new ArrayList<>();
-        int position = 0;
 
-        // grabbing length of input and patterns so it doesnt have to recompute each
-        // iteration
+        // current position for input position tracker (index for input)
+        int currentPosition = 0;
         int patternLength = Main.PATTERNS.length;
         int inputLength = input.length();
-        // going to instantiate a while loop that runs as long as position is not
-        // greater than the length of input
-        // this is going to have a match variable that will ensure extraneous iterations
-        // do not happen
-        // then a for look looping through the pattern and javas stupid matching
-        // functionality will do the rest
 
-        while (position < inputLength) {
+        while (currentPosition < inputLength) {
             boolean match = false;
             for (int i = 0; i < patternLength; i++) {
                 Pattern currentPattern = Main.PATTERNS[i];
-                Matcher currentMatcher = currentPattern.matcher(input.substring(position));
+                Matcher currentMatcher = currentPattern.matcher(input.substring(currentPosition));
                 if (currentMatcher.lookingAt()) {
                     match = true;
                     String tokenValue = currentMatcher.group();
                     Main.TokenType tokenType = Main.TokenType.values()[i];
                     tokens.add(new Token(tokenType, tokenValue));
-                    position += tokenValue.length();
+                    currentPosition += tokenValue.length();
                     break;
                 }
             }
             if (!match) {
-                position++;
+                currentPosition++;
             }
         }
         return tokens;
@@ -236,7 +225,7 @@ public class Main {
     public static void main(String[] args) {
         Lexer lex = new Lexer();
         String source_code = "pub cls MainClass {stat mainClassMethod::void() {console.out(\"hello world\");}}";
-        List<Token> tokens = lex.tokenize(source_code);
+        List<Token> tokens = lex.tokenizer(source_code);
         System.out.println(tokens);
     }
 }
