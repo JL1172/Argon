@@ -10,16 +10,30 @@
     "Programming Languages"
   ],
   "contributes": {
-    "languages": [{
-      "id": "argon",
-      "aliases": ["Argon", "argon"],
-      "extensions": [".ar"],
-      "configuration": "./language-configuration.json"
-    }],
-    "grammars": [{
-      "language": "argon",
-      "scopeName": "source.argon",
-      "path": "./syntaxes/argon.tmLanguage.json"
-    }]
+    "languages": [
+      {
+        "id": "argon",
+        "aliases": [
+          "Argon",
+          "argon"
+        ],
+        "extensions": [
+          ".ar"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/transparent.png",
+          "dark": "./icons/transparent.png"
+      }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "argon",
+        "scopeName": "source.argon",
+        "path": "./syntaxes/argon.tmLanguage.json"
+      }
+    ]
   }
 }
+

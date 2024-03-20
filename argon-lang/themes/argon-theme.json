@@ -1,0 +1,40 @@
+{
+    "name": "Argon Theme",
+    "scopeName": "source.argon",
+    "settings": {
+        "foreground": "#D4D4D4",
+        "background": "#1E1E1E",
+        "textMateRules": [
+            {
+                "scope": "keyword.control.argon",
+                "settings": {
+                    "foreground": "#569CD6"
+                }
+            },
+            {
+                "scope": "keyword.type.argon",
+                "settings": {
+                    "foreground": "#4EC9B0"
+                }
+            },
+            {
+                "scope": "variable.other.argon",
+                "settings": {
+                    "foreground": "#9CDCFE"
+                }
+            },
+            {
+                "scope": "keyword.operator.argon",
+                "settings": {
+                    "foreground": "#D4D4D4"
+                }
+            },
+            {
+                "scope": "punctuation.argon",
+                "settings": {
+                    "foreground": "#D4D4D4"
+                }
+            }
+        ]
+    }
+}

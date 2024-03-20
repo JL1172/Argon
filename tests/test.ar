@@ -1,0 +1,5 @@
+pub cls Main {
+    stat mainMethod() :: void {
+        console.out("hello world");
+    }
+} 

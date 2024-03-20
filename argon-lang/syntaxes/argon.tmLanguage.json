@@ -1,32 +1,122 @@
 {
-	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-	"name": "Argon",
-	"patterns": [
-		{
-			"include": "#keywords"
-		},
-		{
-			"include": "#strings"
-		}
-	],
-	"repository": {
-		"keywords": {
-			"patterns": [{
-				"name": "keyword.control.argon",
-				"match": "\\b(if|while|for|return)\\b"
-			}]
-		},
-		"strings": {
-			"name": "string.quoted.double.argon",
-			"begin": "\"",
-			"end": "\"",
-			"patterns": [
-				{
-					"name": "constant.character.escape.argon",
-					"match": "\\\\."
-				}
-			]
-		}
-	},
-	"scopeName": "source.argon"
+    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "name": "Argon",
+    "patterns": [
+        {
+            "include": "#keywords"
+        },
+        {
+            "include": "#types"
+        },
+        {
+            "include": "#primitiveTypes"
+        },
+        {
+            "include": "#identifiers"
+        },
+        {
+            "include": "#operators"
+        },
+        {
+            "include": "#assignmentOperators"
+        },
+        {
+            "include": "#equalityOperators"
+        },
+        {
+            "include": "#punctuation"
+        },
+        {
+            "include": "#compositeTypes"
+        },
+        {
+            "include": "#otherTokens"
+        }
+    ],
+    "repository": {
+        "keywords": {
+            "patterns": [
+                {
+                    "name": "keyword.control.argon",
+                    "match": "\\b(CLS|PUB|PROT|STAT|VOID|THIS|NEW)\\b",
+                    "captures": {
+                        "0": {"name": "keyword.control.argon"}
+                    }
+                }
+            ]
+        },
+        "types": {
+            "patterns": [
+                {
+                    "name": "keyword.type.argon",
+                    "match": "\\b(DATE|NUMBER|BOOLEAN|STRING)\\b"
+                }
+            ]
+        },
+        "primitiveTypes": {
+            "patterns": [
+                {
+                    "name": "keyword.type.primitive.argon",
+                    "match": "\\b(number|string|boolean)\\b"
+                }
+            ]
+        },
+        "identifiers": {
+            "patterns": [
+                {
+                    "name": "variable.other.argon",
+                    "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\b"
+                }
+            ]
+        },
+        "operators": {
+            "patterns": [
+                {
+                    "name": "keyword.operator.argon",
+                    "match": "\\b(PLUS|INCREMENT|MINUS|DECREMENT|MODULUS|DIVISION|MULTIPLICATION|EXPONENTIATE|SQUARE_ROOT)\\b"
+                }
+            ]
+        },
+        "assignmentOperators": {
+            "patterns": [
+                {
+                    "name": "keyword.operator.assignment.argon",
+                    "match": "\\b(ASSIGNMENT|DIVIDED_EQUALS_SIGN|MULTIPLIED_EQUALS_SIGN|EXPONENTIATE_EQUALS_SIGN|MODULUS_EQUALS_SIGN|PLUS_EQUALS_SIGN|MINUS_EQUALS_SIGN|INCREMENT_EQUALS_SIGN|DECREMENT_EQUALS_SIGN)\\b"
+                }
+            ]
+        },
+        "equalityOperators": {
+            "patterns": [
+                {
+                    "name": "keyword.operator.equality.argon",
+                    "match": "\\b(STRICTLY_EQUALS|STRICTLY_NOT_EQUALS|AND|OR|NOT|GREATER_THAN|LESS_THAN|GREATER_THAN_OR_EQUAL_TO|LESS_THAN_OR_EQUAL_TO)\\b"
+                }
+            ]
+        },
+        "punctuation": {
+            "patterns": [
+                {
+                    "name": "punctuation.argon",
+                    "match": "\\b(SEMICOLON|DOUBLE_COLON|COLON|LPAREN|RPAREN|LBRACE|RBRACE|LBRACKET|RBRACKET|COMMA|DOLLAR_SIGN|BACK_TICK|QUOTE|SINGLE_QUOTE|DOT)\\b"
+                }
+            ]
+        },
+        "compositeTypes": {
+            "patterns": [
+                {
+                    "name": "keyword.type.composite.argon",
+                    "match": "\\b(STATIC_ARRAY|DYNAMIC_ARRAY)\\b"
+                }
+            ]
+        },
+        "otherTokens": {
+            "patterns": [
+                {
+                    "name": "other.token.argon",
+                    "match": "\\b(EOF|CONSOLE_OUT)\\b"
+                }
+            ]
+        }
+    },
+    "scopeName": "source.argon"
 }
