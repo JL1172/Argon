@@ -4,13 +4,16 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+//util class
 class Token {
+
+    // private final because encapsulation
     private final Main.TokenType type;
     private final String value;
 
     Token(Main.TokenType type, String value) {
-        this.type = type;
         this.value = value;
+        this.type = type;
     }
 
     String getValue() {
@@ -32,32 +35,41 @@ class Token {
 
 class Lexer {
 
-    List<Token> tokenizer(String input) {
+    // this wont be static because i am using an instance of this class
+    // this wont be public because i want it to be package private
 
+    List<Token> tokenizer(String input) {
         List<Token> tokens = new ArrayList<>();
 
-        // current position for input position tracker (index for input)
         int currentPosition = 0;
-        int patternLength = Main.PATTERNS.length;
         int inputLength = input.length();
+        int patternLength = Main.PATTERNS.length;
 
+        // looping through the code
         while (currentPosition < inputLength) {
             boolean match = false;
+
             for (int i = 0; i < patternLength; i++) {
-                Pattern currentPattern = Main.PATTERNS[i];
-                Matcher currentMatcher = currentPattern.matcher(input.substring(currentPosition));
-                if (currentMatcher.lookingAt()) {
+                // now i need to match the patterns and then create tokens
+                Pattern currentPattern = Main.PATTERNS[i]; // grab the pattern at index i
+                Matcher currentMatch = currentPattern.matcher(input.substring(currentPosition)); // create matcher
+                                                                                                 // object matching the
+                                                                                                 // input at the
+                                                                                                 // currentposition
+                if (currentMatch.lookingAt()) {
+                    // now i am verifying match
                     match = true;
-                    String tokenValue = currentMatcher.group();
+                    String tokenValue = currentMatch.group();
+                    // i am then grabbing the value of the matched pattern which is 1:1 with the
+                    // compiled regex patterns in the PATTERNS field
                     Main.TokenType tokenType = Main.TokenType.values()[i];
                     tokens.add(new Token(tokenType, tokenValue));
                     currentPosition += tokenValue.length();
                     break;
                 }
             }
-            if (!match) {
+            if (!match)
                 currentPosition++;
-            }
         }
         return tokens;
     }
@@ -73,6 +85,16 @@ public class Main {
         STAT, // short for static
         VOID, // used if a method returns nothing
         THIS, // used as "this"
+        NEW, // used as new
+
+        // singular and multiple methods
+        SINGULAR_METHOD,
+        MULTIPLE_METHOD,
+        // type names
+        DATE_IDENTIFIER,
+        NUMBER_IDENTIFIER,
+        BOOLEAN_IDENTIFIER,
+        STRING_IDENTIFIER,
 
         // output statement
         CONSOLE_OUT,
@@ -162,6 +184,17 @@ public class Main {
             Pattern.compile("stat"),
             Pattern.compile("void"),
             Pattern.compile("this"),
+            Pattern.compile("new"),
+
+            // singular and multiple methods
+            Pattern.compile("@singular"),
+            Pattern.compile("@multiple"),
+
+            // type indentifiers
+            Pattern.compile("Date"),
+            Pattern.compile("number"),
+            Pattern.compile("boolean"),
+            Pattern.compile("string"),
 
             Pattern.compile("console\\.out\\((.*?)\\)"),
             Pattern.compile("[a-zA-Z_][a-zA-Z0-9_]*"), // Identifier
@@ -224,11 +257,128 @@ public class Main {
 
     public static void main(String[] args) {
         Lexer lex = new Lexer();
-        String source_code = "pub cls MainClass {stat mainClassMethod::void() {console.out(\"hello world\");}}";
+        String source_code = "cls SecondaryClass { dob::Date; pub age::number; @singular(age::number,dob::Date) { this.age = age; this.dob = dob; } @multiple() { pub arrayList::ArrayD[string] = new ArrayD(); } addYearToAge(age::number) :: void { this.age++=; } pub changeDob(date::Date) :: void { this.dob = date; } pub viewDob() :: Date { return this.dob; }} pub cls Main { stat mainMethod() :: void { secondary::SecondaryClass = new SecondaryClass(22, 07/18/01); secondInstanceOfSecondary::SecondaryClass = new SecondaryClass(22, 11/08/2001); secondary.arrayList.push(\"jacob\"); secondInstanceOfSecondary.push(\"patrick\"); console.log(secondary.arrayList); console.log(secondInstanceOfSecondary.arrayList); name::string=\"jacob lang\"; console.out(name); console.out(secondary.age); secondary.addYearToAge(); console.out(secondary.age); secondary.changeDob(\"07/18/2001\"); console.out(secondary.viewDob); console.log(secondary.dob) }}";
         List<Token> tokens = lex.tokenizer(source_code);
         System.out.println(tokens);
     }
 }
+
+/*
+ * [Token{type=CLS, value='cls'}, Token{type=IDENTIFIER,
+ * value='SecondaryClass'}, Token{type=LBRACE, value='{'},
+ * Token{type=IDENTIFIER, value='dob'}, Token{type=DOUBLE_COLON, value='::'},
+ * Token{type=DATE_IDENTIFIER, value='Date'}, Token{type=SEMICOLON, value=';'},
+ * Token{type=PUB, value='pub'}, Token{type=IDENTIFIER, value='age'},
+ * Token{type=DOUBLE_COLON, value='::'}, Token{type=NUMBER_IDENTIFIER,
+ * value='number'}, Token{type=SEMICOLON, value=';'},
+ * Token{type=SINGULAR_METHOD, value='@singular'}, Token{type=LPAREN,
+ * value='('}, Token{type=IDENTIFIER, value='age'}, Token{type=DOUBLE_COLON,
+ * value='::'}, Token{type=NUMBER_IDENTIFIER, value='number'}, Token{type=COMMA,
+ * value=','}, Token{type=IDENTIFIER, value='dob'}, Token{type=DOUBLE_COLON,
+ * value='::'}, Token{type=DATE_IDENTIFIER, value='Date'}, Token{type=RPAREN,
+ * value=')'}, Token{type=LBRACE, value='{'}, Token{type=THIS, value='this'},
+ * Token{type=DOT, value='.'}, Token{type=IDENTIFIER, value='age'},
+ * Token{type=ASSIGNMENT, value='='}, Token{type=IDENTIFIER, value='age'},
+ * Token{type=SEMICOLON, value=';'}, Token{type=THIS, value='this'},
+ * Token{type=DOT, value='.'}, Token{type=IDENTIFIER, value='dob'},
+ * Token{type=ASSIGNMENT, value='='}, Token{type=IDENTIFIER, value='dob'},
+ * Token{type=SEMICOLON, value=';'}, Token{type=RBRACE, value='}'},
+ * Token{type=MULTIPLE_METHOD, value='@multiple'}, Token{type=LPAREN,
+ * value='('}, Token{type=RPAREN, value=')'}, Token{type=LBRACE, value='{'},
+ * Token{type=PUB, value='pub'}, Token{type=IDENTIFIER, value='arrayList'},
+ * Token{type=DOUBLE_COLON, value='::'}, Token{type=IDENTIFIER, value='ArrayD'},
+ * Token{type=LBRACKET, value='['}, Token{type=STRING_IDENTIFIER,
+ * value='string'}, Token{type=RBRACKET, value=']'}, Token{type=ASSIGNMENT,
+ * value='='}, Token{type=NEW, value='new'}, Token{type=IDENTIFIER,
+ * value='ArrayD'}, Token{type=LPAREN, value='('}, Token{type=RPAREN,
+ * value=')'}, Token{type=SEMICOLON, value=';'}, Token{type=RBRACE, value='}'},
+ * Token{type=IDENTIFIER, value='addYearToAge'}, Token{type=LPAREN, value='('},
+ * Token{type=IDENTIFIER, value='age'}, Token{type=DOUBLE_COLON, value='::'},
+ * Token{type=NUMBER_IDENTIFIER, value='number'}, Token{type=RPAREN, value=')'},
+ * Token{type=DOUBLE_COLON, value='::'}, Token{type=VOID, value='void'},
+ * Token{type=LBRACE, value='{'}, Token{type=THIS, value='this'},
+ * Token{type=DOT, value='.'}, Token{type=IDENTIFIER, value='age'},
+ * Token{type=PLUS, value='+'}, Token{type=PLUS, value='+'},
+ * Token{type=ASSIGNMENT, value='='}, Token{type=SEMICOLON, value=';'},
+ * Token{type=RBRACE, value='}'}, Token{type=PUB, value='pub'},
+ * Token{type=IDENTIFIER, value='changeDob'}, Token{type=LPAREN, value='('},
+ * Token{type=IDENTIFIER, value='date'}, Token{type=DOUBLE_COLON, value='::'},
+ * Token{type=DATE_IDENTIFIER, value='Date'}, Token{type=RPAREN, value=')'},
+ * Token{type=DOUBLE_COLON, value='::'}, Token{type=VOID, value='void'},
+ * Token{type=LBRACE, value='{'}, Token{type=THIS, value='this'},
+ * Token{type=DOT, value='.'}, Token{type=IDENTIFIER, value='dob'},
+ * Token{type=ASSIGNMENT, value='='}, Token{type=IDENTIFIER, value='date'},
+ * Token{type=SEMICOLON, value=';'}, Token{type=RBRACE, value='}'},
+ * Token{type=PUB, value='pub'}, Token{type=IDENTIFIER, value='viewDob'},
+ * Token{type=LPAREN, value='('}, Token{type=RPAREN, value=')'},
+ * Token{type=DOUBLE_COLON, value='::'}, Token{type=DATE_IDENTIFIER,
+ * value='Date'}, Token{type=LBRACE, value='{'}, Token{type=IDENTIFIER,
+ * value='return'}, Token{type=THIS, value='this'}, Token{type=DOT, value='.'},
+ * Token{type=IDENTIFIER, value='dob'}, Token{type=SEMICOLON, value=';'},
+ * Token{type=RBRACE, value='}'}, Token{type=RBRACE, value='}'}, Token{type=PUB,
+ * value='pub'}, Token{type=CLS, value='cls'}, Token{type=IDENTIFIER,
+ * value='Main'}, Token{type=LBRACE, value='{'}, Token{type=STAT, value='stat'},
+ * Token{type=IDENTIFIER, value='mainMethod'}, Token{type=LPAREN, value='('},
+ * Token{type=RPAREN, value=')'}, Token{type=DOUBLE_COLON, value='::'},
+ * Token{type=VOID, value='void'}, Token{type=LBRACE, value='{'},
+ * Token{type=IDENTIFIER, value='secondary'}, Token{type=DOUBLE_COLON,
+ * value='::'}, Token{type=IDENTIFIER, value='SecondaryClass'},
+ * Token{type=ASSIGNMENT, value='='}, Token{type=NEW, value='new'},
+ * Token{type=IDENTIFIER, value='SecondaryClass'}, Token{type=LPAREN,
+ * value='('}, Token{type=NUMBER, value='22'}, Token{type=COMMA, value=','},
+ * Token{type=NUMBER, value='0'}, Token{type=NUMBER, value='7'},
+ * Token{type=DIVISION, value='/'}, Token{type=NUMBER, value='18'},
+ * Token{type=DIVISION, value='/'}, Token{type=NUMBER, value='0'},
+ * Token{type=NUMBER, value='1'}, Token{type=RPAREN, value=')'},
+ * Token{type=SEMICOLON, value=';'}, Token{type=IDENTIFIER,
+ * value='secondInstanceOfSecondary'}, Token{type=DOUBLE_COLON, value='::'},
+ * Token{type=IDENTIFIER, value='SecondaryClass'}, Token{type=ASSIGNMENT,
+ * value='='}, Token{type=NEW, value='new'}, Token{type=IDENTIFIER,
+ * value='SecondaryClass'}, Token{type=LPAREN, value='('}, Token{type=NUMBER,
+ * value='22'}, Token{type=COMMA, value=','}, Token{type=NUMBER, value='11'},
+ * Token{type=DIVISION, value='/'}, Token{type=NUMBER, value='0'},
+ * Token{type=NUMBER, value='8'}, Token{type=DIVISION, value='/'},
+ * Token{type=NUMBER, value='2001'}, Token{type=RPAREN, value=')'},
+ * Token{type=SEMICOLON, value=';'}, Token{type=IDENTIFIER, value='secondary'},
+ * Token{type=DOT, value='.'}, Token{type=IDENTIFIER, value='arrayList'},
+ * Token{type=DOT, value='.'}, Token{type=IDENTIFIER, value='push'},
+ * Token{type=LPAREN, value='('}, Token{type=STRING, value='"jacob"'},
+ * Token{type=RPAREN, value=')'}, Token{type=SEMICOLON, value=';'},
+ * Token{type=IDENTIFIER, value='secondInstanceOfSecondary'}, Token{type=DOT,
+ * value='.'}, Token{type=IDENTIFIER, value='push'}, Token{type=LPAREN,
+ * value='('}, Token{type=STRING, value='"patrick"'}, Token{type=RPAREN,
+ * value=')'}, Token{type=SEMICOLON, value=';'}, Token{type=IDENTIFIER,
+ * value='console'}, Token{type=DOT, value='.'}, Token{type=IDENTIFIER,
+ * value='log'}, Token{type=LPAREN, value='('}, Token{type=IDENTIFIER,
+ * value='secondary'}, Token{type=DOT, value='.'}, Token{type=IDENTIFIER,
+ * value='arrayList'}, Token{type=RPAREN, value=')'}, Token{type=SEMICOLON,
+ * value=';'}, Token{type=IDENTIFIER, value='console'}, Token{type=DOT,
+ * value='.'}, Token{type=IDENTIFIER, value='log'}, Token{type=LPAREN,
+ * value='('}, Token{type=IDENTIFIER, value='secondInstanceOfSecondary'},
+ * Token{type=DOT, value='.'}, Token{type=IDENTIFIER, value='arrayList'},
+ * Token{type=RPAREN, value=')'}, Token{type=SEMICOLON, value=';'},
+ * Token{type=IDENTIFIER, value='name'}, Token{type=DOUBLE_COLON, value='::'},
+ * Token{type=STRING_IDENTIFIER, value='string'}, Token{type=ASSIGNMENT,
+ * value='='}, Token{type=STRING, value='"jacob lang"'}, Token{type=SEMICOLON,
+ * value=';'}, Token{type=CONSOLE_OUT, value='console.out(name)'},
+ * Token{type=SEMICOLON, value=';'}, Token{type=CONSOLE_OUT,
+ * value='console.out(secondary.age)'}, Token{type=SEMICOLON, value=';'},
+ * Token{type=IDENTIFIER, value='secondary'}, Token{type=DOT, value='.'},
+ * Token{type=IDENTIFIER, value='addYearToAge'}, Token{type=LPAREN, value='('},
+ * Token{type=RPAREN, value=')'}, Token{type=SEMICOLON, value=';'},
+ * Token{type=CONSOLE_OUT, value='console.out(secondary.age)'},
+ * Token{type=SEMICOLON, value=';'}, Token{type=IDENTIFIER, value='secondary'},
+ * Token{type=DOT, value='.'}, Token{type=IDENTIFIER, value='changeDob'},
+ * Token{type=LPAREN, value='('}, Token{type=STRING, value='"07/18/2001"'},
+ * Token{type=RPAREN, value=')'}, Token{type=SEMICOLON, value=';'},
+ * Token{type=CONSOLE_OUT, value='console.out(secondary.viewDob)'},
+ * Token{type=SEMICOLON, value=';'}, Token{type=IDENTIFIER, value='console'},
+ * Token{type=DOT, value='.'}, Token{type=IDENTIFIER, value='log'},
+ * Token{type=LPAREN, value='('}, Token{type=IDENTIFIER, value='secondary'},
+ * Token{type=DOT, value='.'}, Token{type=IDENTIFIER, value='dob'},
+ * Token{type=RPAREN, value=')'}, Token{type=RBRACE, value='}'},
+ * Token{type=RBRACE, value='}'}]
+ */
 
 /*
  * [Token{type=PUB, value='pub'},

@@ -52,7 +52,7 @@ cls IntroductionClass {
     //similar to constructor in javascript
     //this is built in
 
-    singular(name::string, username::string) {
+    @singular(name::string, username::string) {
         name::string = this.name; //private by default //means you need a getter function
         pub username::string = this.username //fleshed out by pub access modifier //you can access this directly without a getter function
     }
@@ -60,7 +60,7 @@ cls IntroductionClass {
     //multiple means these are shared across all classes
     //this is built in
 
-    multiple() {
+    @multiple() {
 
         //variable construction
 
@@ -179,14 +179,14 @@ pub cls ExampleClass {
 
         //then singular is the equivalent of constructor() {} in javascript, where those inputted values at the time of class instantiation are inputted at the 
         //constructor level, so now those variables are inputted as this.age and this.dob the values initialized above
-        singular(age::number,dob::Date) {
+        @singular(age::number,dob::Date) {
             this.age = age;
             this.dob = dob;
         }
 
         //this multiple method that is built in like the singular method accounts for the case when you want something like a variable or property to be shared 
         //among all instances of classes, so anything added to the arrayList which is just a dynamic array is shared among all instances of the classes
-        multiple() {
+        @multiple() {
             //as you can see in order to set the type of the variable arrayList all types are declared with ::
             pub arrayList::ArrayD<string>[] = new ArrayList();
         }
