@@ -85,6 +85,9 @@ public class Main {
         VOID, // used if a method returns nothing
         THIS, // used as "this"
 
+        // output statement
+        CONSOLE_OUT,
+
         // identifier for name of method or class or property
         IDENTIFIER,
 
@@ -129,8 +132,8 @@ public class Main {
 
         // punctuation
         SEMICOLON,
-        COLON,
         DOUBLE_COLON,
+        COLON,
         LPAREN,
         RPAREN,
         LBRACE,
@@ -143,9 +146,6 @@ public class Main {
         QUOTE,
         SINGLE_QUOTE,
         DOT,
-
-        // output statement
-        CONSOLE_OUT,
 
         // composite data types
         STATIC_ARRAY, // instantiated exactly like this: myArrayList::ArrayS[string] = new ArrayS(5);
@@ -174,6 +174,7 @@ public class Main {
             Pattern.compile("void"),
             Pattern.compile("this"),
 
+            Pattern.compile("console\\.out\\((.*?)\\)"),
             Pattern.compile("[a-zA-Z_][a-zA-Z0-9_]*"), // Identifier
 
             Pattern.compile("-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?"), // Number
@@ -212,8 +213,8 @@ public class Main {
             Pattern.compile("<="), // Less than or equal to
 
             Pattern.compile(";"), // Semicolon
-            Pattern.compile(":"), // Colon
             Pattern.compile("::"), // Double colon
+            Pattern.compile(":"), // Colon
             Pattern.compile("\\("), // Left parenthesis
             Pattern.compile("\\)"), // Right parenthesis
             Pattern.compile("\\{"), // Left brace
@@ -225,8 +226,7 @@ public class Main {
             Pattern.compile("`"), // Back tick
             Pattern.compile("\""), // Quote
             Pattern.compile("'"), // Single quote
-            Pattern.compile("."),
-            Pattern.compile("console\\\\.out\\\\((.*?)\\\\)"),
+            Pattern.compile("\\."),
             Pattern.compile(
                     "[a-zA-Z_][a-zA-Z0-9_]*::ArrayS\\\\[.*?\\\\]\\\\s*=\\\\s*new\\\\s+ArrayS\\\\(.*?\\\\);|[a-zA-Z_][a-zA-Z0-9_]*::ArrayS\\\\[.*?\\\\]\\\\s*=\\\\s*\\\\[.*?\\\\];"),
             Pattern.compile(
@@ -240,3 +240,21 @@ public class Main {
         System.out.println(tokens);
     }
 }
+
+/*
+ * [Token{type=PUB, value='pub'},
+ * Token{type=CLS, value='cls'},
+ * Token{type=IDENTIFIER, value='MainClass'},
+ * Token{type=LBRACE, value='{'},
+ * Token{type=STAT, value='stat'},
+ * Token{type=IDENTIFIER, value='mainClassMethod'},
+ * Token{type=DOUBLE_COLON, value='::'},
+ * Token{type=VOID, value='void'},
+ * Token{type=LPAREN, value='('},
+ * Token{type=RPAREN, value=')'},
+ * Token{type=LBRACE, value='{'},
+ * Token{type=CONSOLE_OUT, value='console.out("hello world")'},
+ * Token{type=SEMICOLON, value=';'},
+ * Token{type=RBRACE, value='}'},
+ * Token{type=RBRACE, value='}'}]
+ */
