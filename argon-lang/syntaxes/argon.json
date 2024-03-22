@@ -1,0 +1,69 @@
+{
+  "name": "argon",
+  "scopeName": "source.argon",
+  "patterns": [
+    {
+      "match": "(?:(?<=(\"|')))(.*?)(?=(\\1))",
+      "captures": {
+        "1": { "name": "punctuation.definition.string" },
+        "2": { "name": "string" }
+      }
+    },
+    {
+      "match": "[;:\\)\\{\\}\\[\\]\\,\\$]",
+      "name": "punctuation"
+    },
+    {
+      "match": "(`|(\\\"|'))",
+      "name": "string"
+    },
+    {
+      "match": "\\b(Date|number|boolean|string|void)\\b",
+      "name": "keyword.type"
+    },
+    {
+      "match": "@(singular|multiple)",
+      "name": "meta.decorator"
+    },
+    {
+      "match": "\\b(cls|pub|prot|stat|this|new)\\b",
+      "name": "keyword"
+    },
+    {
+      "match": "\\b(while|for)\\b",
+      "name": "keyword.control"
+    },
+    {
+      "match": "\\b(ArrayS|ArrayD)\\b",
+      "name": "storage.type"
+    },
+    {
+      "match": "([\\+\\-\\*/%])|(\\.\\.\\.)|(\\*{2})",
+      "name": "keyword.operator.assignment"
+    },
+    {
+      "match": "([<>]=?|&&|\\|\\||!==?|!)",
+      "name": "keyword.operator.logical"
+    },
+    {
+      "match": "\\bconsole\\.[a-zA-Z_][a-zA-Z0-9_]*\\b",
+      "name": "support.function"
+    },
+    {
+      "match": "(\\/\\/|\\/\\*([^\\*]|\\*[^\\/])*(\\*\\/))",
+      "name": "comment"
+    },
+    {
+      "match": "[a-zA-Z_][a-zA-Z0-9_]*",
+      "name": "variable"
+    },
+    {
+      "match": "\\b\\d+(\\.\\d+)?\\b",
+      "name": "constant.numeric"
+    },
+    {
+      "match": "\\\"(\\\\.|[^\\\\\"])*\\\"",
+      "name": "string.quoted.double"
+    }
+  ]
+}

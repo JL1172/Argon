@@ -24,16 +24,15 @@
         "icon": {
           "light": "./icons/transparent.png",
           "dark": "./icons/transparent.png"
-      }
+        }
       }
     ],
     "grammars": [
       {
         "language": "argon",
         "scopeName": "source.argon",
-        "path": "./syntaxes/argon.tmLanguage.json"
+        "path": "./syntaxes/argon.json"
       }
     ]
   }
 }
-

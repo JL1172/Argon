@@ -52,10 +52,7 @@ class Lexer {
             for (int i = 0; i < patternLength; i++) {
                 // now i need to match the patterns and then create tokens
                 Pattern currentPattern = Main.PATTERNS[i]; // grab the pattern at index i
-                Matcher currentMatch = currentPattern.matcher(input.substring(currentPosition)); // create matcher
-                                                                                                 // object matching the
-                                                                                                 // input at the
-                                                                                                 // currentposition
+                Matcher currentMatch = currentPattern.matcher(input.substring(currentPosition));
                 if (currentMatch.lookingAt()) {
                     // now i am verifying match
                     match = true;
