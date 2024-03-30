@@ -174,6 +174,7 @@ public class Main {
         EOF,
     }
 
+    
     static final Pattern[] PATTERNS = {
             Pattern.compile("cls"),
             Pattern.compile("pub"),
