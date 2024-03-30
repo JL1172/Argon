@@ -88,6 +88,7 @@ public class Main {
         // singular and multiple methods
         THIS_METHOD,
         // type names
+        NULL_IDENTIFIER,
         DATE_IDENTIFIER,
         NUMBER_IDENTIFIER,
         BOOLEAN_IDENTIFIER,
@@ -188,6 +189,7 @@ public class Main {
             Pattern.compile("@this"),
 
             // type indentifiers
+            Pattern.compile("null"),
             Pattern.compile("Date"),
             Pattern.compile("number"),
             Pattern.compile("boolean"),
