@@ -174,7 +174,7 @@ public class Main {
         EOF,
     }
 
-    
+
     static final Pattern[] PATTERNS = {
             Pattern.compile("cls"),
             Pattern.compile("pub"),
@@ -255,7 +255,7 @@ public class Main {
 
     public static void main(String[] args) {
         Lexer lex = new Lexer();
-        String source_code = "class SecondaryClass { private dob::Date; private age::number; @this(age::number,dob::Date) { this.age = age; this.dob = dob; } addYearToAge(age::number) :: void { this.age += age; } changeDob(date::Date) :: void { this.dob = date; } pub viewDob() :: Date { return this.dob; } } pub class Main { stat mainMethod() :: void { secondary::SecondaryClass = new SecondaryClass(22, 07/18/01); secondInstanceOfSecondary::SecondaryClass = new SecondaryClass(22, 11/08/2001); name::string=\"jacob lang\"; cout(name); cout(secondary.age); secondary.addYearToAge(1); cout(secondary.age); secondary.changeDob(\"07/18/2001\"); cout(secondary.viewDob); } }";
+        String source_code = "class SecondaryClass { reserved dob::Date; reserved age::number; @this(age::number,dob::Date) { this.age = age; this.dob = dob; } addYearToAge(age::number) :: void { this.age += age; } changeDob(date::Date) :: void { this.dob = date; } pub viewDob() :: Date { return this.dob; } } pub class Main { stat mainMethod() :: void { secondary::SecondaryClass = new SecondaryClass(22, 07/18/01); secondInstanceOfSecondary::SecondaryClass = new SecondaryClass(22, 11/08/2001); name::string=\"jacob lang\"; cout(name); cout(secondary.age); secondary.addYearToAge(1); cout(secondary.age); secondary.changeDob(\"07/18/2001\"); cout(secondary.viewDob); } }";
         List<Token> tokens = lex.tokenizer(source_code);
         System.out.println(tokens);
     }
