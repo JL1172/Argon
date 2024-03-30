@@ -12,3 +12,12 @@
 - Classes can be nested
 - Classes nested can be given access modifiers such as `reserved`
 - If nested class is public, but parent class is not, this will have no effect and will throw a `compilation error`
+
+### Polymorphism 
+
+- Not allowed for version 0.0.1
+
+
+### Prototypical Inheritence
+
+- Not allowed for version 0.0.1
