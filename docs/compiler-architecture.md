@@ -24,3 +24,10 @@ The lexer uses a series of patterns, corresponding 1:1 in index with the `TokenT
 
 The main part of the lexer consists of a tokenization method. This method iterates through the input code, matches each value with the correct pattern, and packages it into a token with the help of the `Token` class. These tokens are then added to an array, which is returned as a comprehensive list of tokens representing the segmented code.
 
+#  Parser Architecture Overview
+
+## Parsing Technique (Recursive Descent Parsing)
+
+## Data Structures to represent AST nodes
+
+## Error Handling

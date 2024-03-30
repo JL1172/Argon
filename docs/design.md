@@ -1,5 +1,7 @@
 # Object-Oriented Language Design Considerations
 
+# NOTE THAT THERE ARE SLIGHT DEVIANCES AND ALL FEATURES ARE IN THE VERSIONING DIRECTORY
+
 ## Types:
 
 ### Type System:
@@ -52,29 +54,10 @@ cls IntroductionClass {
     //similar to constructor in javascript
     //this is built in
 
-    @singular(name::string, username::string) {
+    @this(name::string, username::string) {
         name::string = this.name; //private by default //means you need a getter function
         pub username::string = this.username //fleshed out by pub access modifier //you can access this directly without a getter function
     }
-
-    //multiple means these are shared across all classes
-    //this is built in
-
-    @multiple() {
-
-        //variable construction
-
-        /*
-            if not in method  and in either singular or multiple
-            access modifier + variableName (must be camel case):: type = value
-
-            if it is a composite datatype
-            access modifier + variableName(must be camelCase)::ArrayD(dynamic array)<type of composite data type> = new ArrayD();
-        */
-
-        pub listOfNames::ArrayD[string] = new ArrayD();
-    }
-
 
         //method construction
         /*
