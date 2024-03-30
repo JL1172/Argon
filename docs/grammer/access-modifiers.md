@@ -46,7 +46,7 @@
 
 ### Description For Classes:
 
-- The `reserved` access modifier has no effect on classes (will throw error)
+- The `reserved` access modifier has no effect on classes (will throw error) that are not nested classes
 
 ### Description For Methods:
 
