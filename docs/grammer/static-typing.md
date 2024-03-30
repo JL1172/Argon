@@ -3,6 +3,7 @@
 ## General Rules
 
 - For this version, there is only one typing per variable or method, no multiple type options yet
+- If typing is applied to anything other than methods or variables, an error will be thrown
 
 ## Types
 
