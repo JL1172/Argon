@@ -174,7 +174,6 @@ public class Main {
         EOF,
     }
 
-
     static final Pattern[] PATTERNS = {
             Pattern.compile("cls"),
             Pattern.compile("pub"),
@@ -263,11 +262,11 @@ public class Main {
 
 /*
  * Token{type=IDENTIFIER, value='class'}, Token{type=IDENTIFIER,
- * value='SecondaryClass'}, Token{type=LBRACE, value='{'},
- * Token{type=IDENTIFIER, value='private'}, Token{type=IDENTIFIER, value='dob'},
+ * value='SecondaryClass'}, Token{type=LBRACE, value='{'}, Token{type=RESERVED,
+ * value='reserved'}, Token{type=IDENTIFIER, value='dob'},
  * Token{type=DOUBLE_COLON, value='::'}, Token{type=DATE_IDENTIFIER,
- * value='Date'}, Token{type=SEMICOLON, value=';'}, Token{type=IDENTIFIER,
- * value='private'}, Token{type=IDENTIFIER, value='age'},
+ * value='Date'}, Token{type=SEMICOLON, value=';'}, Token{type=RESERVED,
+ * value='reserved'}, Token{type=IDENTIFIER, value='age'},
  * Token{type=DOUBLE_COLON, value='::'}, Token{type=NUMBER_IDENTIFIER,
  * value='number'}, Token{type=SEMICOLON, value=';'}, Token{type=THIS_METHOD,
  * value='@this'}, Token{type=LPAREN, value='('}, Token{type=IDENTIFIER,
