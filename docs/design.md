@@ -172,6 +172,7 @@ pub cls ExampleClass {
 /*  
     cls SecondaryClass {
 
+        //this is like java
         //this is whats happening, dob is initialized and if a property is not prefixed by an access modifier, its default is private so dob is private
         //and age is public
         dob::Date;
@@ -240,11 +241,14 @@ pub cls ExampleClass {
 - Pascal Casing for classes
 - camelCasing for methods
 - camel or snake casing for properties
-
+er = 2;
+pub name::string
 ### access modifiers:
 
 - pub
-- prot (visible to each class)
+- reserved : same as private 
+- const
+- prot (visible to each class) (same as readonly)
 - stat (specific to method only, short for static) (implies public as well so no need to do pub stat, just write stat and it is then public specific to that class)
 - no prefix is same as java and is package specific so file only
 - all classes are package-private by default
@@ -448,7 +452,7 @@ listOfOtherNames::ArrayS[string] = ["hello","goodnight"];
 /=
 *=
 **=
-%/
+%=
 +=
 -=
 ++=
