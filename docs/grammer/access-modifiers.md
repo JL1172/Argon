@@ -50,7 +50,7 @@
 
 ### Description For Methods:
 
-- The `reserved` access modifier will make a method private and only accessible within its parent class (will throw error)
+- The `reserved` access modifier will make a method private and only accessible within its parent class
 
 ### Description For Variables:
 
