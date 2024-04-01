@@ -12,8 +12,8 @@
 - [int](literals.md)
 - [float](literals.md)
 - [double](literals.md)
-- string 
-- [boolean](literal.md)
+- [string](literals.md)
+- [boolean](literals.md)
 - [void](literals.md)
 - [null](literals.md)
 
