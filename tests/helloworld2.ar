@@ -1,0 +1,39 @@
+cls SecondaryClass {
+    reserved money:: flt;
+    reserved averageSalary :: flt = 1.234;
+    reserved age :: int;
+
+    @this(age:: int, money:: flt) {
+        this.age = age;
+        this.money = money;
+    }
+    addYearToAge(age::int) :: void {
+        this.age += age;
+    }
+    changeMoney(money:: flt) :: void {
+        this.money = money;
+    }
+    pub viewMoney() :: flt {
+        return this.money;
+    }
+}
+
+// line 313 of token in Lexer package  
+pub cls Main {
+    stat mainMethod() :: void {
+        seconary :: SecondaryClass = new SecondaryClass(22, 719.129);
+        secondInstanceOfSecondary :: SecondaryClass = new SecondaryClass(22, 992.12);
+
+        name:: string = "jacob lang";
+
+        cout(name);
+        
+        secondary.addYearToAge(1);
+
+        cout(secondary.age);
+        
+        secondary.changeMoney(37728.12);
+        
+        cout(secondaryViewMoney);
+    }
+}

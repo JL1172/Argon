@@ -8,10 +8,10 @@ import java.util.regex.Pattern;
 class Token {
 
     // private final because encapsulation
-    private final Main.TokenType type;
+    private final LexerMain.TokenType type;
     private final String value;
 
-    Token(Main.TokenType type, String value) {
+    Token(LexerMain.TokenType type, String value) {
         this.value = value;
         this.type = type;
     }
@@ -20,7 +20,7 @@ class Token {
         return value;
     }
 
-    Main.TokenType getType() {
+    LexerMain.TokenType getType() {
         return type;
     }
 
@@ -43,7 +43,7 @@ class Lexer {
 
         int currentPosition = 0;
         int inputLength = input.length();
-        int patternLength = Main.PATTERNS.length;
+        int patternLength = LexerMain.PATTERNS.length;
 
         // looping through the code
         while (currentPosition < inputLength) {
@@ -51,7 +51,7 @@ class Lexer {
 
             for (int i = 0; i < patternLength; i++) {
                 // now i need to match the patterns and then create tokens
-                Pattern currentPattern = Main.PATTERNS[i]; // grab the pattern at index i
+                Pattern currentPattern = LexerMain.PATTERNS[i]; // grab the pattern at index i
                 Matcher currentMatch = currentPattern.matcher(input.substring(currentPosition));
                 if (currentMatch.lookingAt()) {
                     // now i am verifying match
@@ -59,7 +59,7 @@ class Lexer {
                     String tokenValue = currentMatch.group();
                     // i am then grabbing the value of the matched pattern which is 1:1 with the
                     // compiled regex patterns in the PATTERNS field
-                    Main.TokenType tokenType = Main.TokenType.values()[i];
+                    LexerMain.TokenType tokenType = LexerMain.TokenType.values()[i];
                     tokens.add(new Token(tokenType, tokenValue));
                     currentPosition += tokenValue.length();
                     break;
@@ -72,7 +72,7 @@ class Lexer {
     }
 }
 
-public class Main {
+public class LexerMain {
     static enum TokenType {
 
         // keywords
@@ -84,6 +84,7 @@ public class Main {
         VOID, // used if a method returns nothing
         THIS, // used as "this"
         NEW, // used as new
+        CONST, 
 
         // singular and multiple methods
         THIS_METHOD,
@@ -185,6 +186,7 @@ public class Main {
             Pattern.compile("void"),
             Pattern.compile("this"),
             Pattern.compile("new"),
+            Pattern.compile("const"), 
 
             // this (same as constructor) methods
             Pattern.compile("@this"),
@@ -348,44 +350,3 @@ public class Main {
  * 
  */
 
-/*
-cls SecondaryClass {
-    reserved money:: flt;
-    reserved averageSalary :: flt = 1.234;
-    reserved age :: int;
-
-    @this(age:: int, money:: flt) {
-        this.age = age;
-        this.money = money;
-    }
-    addYearToAge(age::int) :: void {
-        this.age += age;
-    }
-    changeMoney(money:: flt) :: void {
-        this.money = money;
-    }
-    pub viewMoney() :: flt {
-        return this.money;
-    }
-}
-
-//! 313
-pub cls Main {
-    stat mainMethod() :: void {
-        seconary :: SecondaryClass = new SecondaryClass(22, 719.129);
-        secondInstanceOfSecondary :: SecondaryClass = new SecondaryClass(22, 992.12);
-
-        name:: string = "jacob lang";
-
-        cout(name);
-        
-        secondary.addYearToAge(1);
-
-        cout(secondary.age);
-        
-        secondary.changeMoney(37728.12);
-        
-        cout(secondaryViewMoney);
-    }
-}
- */
