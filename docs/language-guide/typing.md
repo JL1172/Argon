@@ -9,12 +9,13 @@
 
 #### Primitive Types
 
-- Date
-- number (double precision 64 bit floating point number)
+- [int](literals.md)
+- [float](literals.md)
+- [double](literals.md)
 - string 
-- boolean 
-- void
-- null
+- [boolean](literal.md)
+- [void](literals.md)
+- [null](literals.md)
 
 #### Composite Types
 
@@ -51,6 +52,8 @@ cls AccountDetails {
 ```
 
 ## Typing for Composite Types
+
+[**a good reference for composite types**](literals.md)
 
 ```
 cls AccountDetails {
