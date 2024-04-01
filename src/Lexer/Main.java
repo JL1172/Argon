@@ -87,10 +87,12 @@ public class Main {
 
         // singular and multiple methods
         THIS_METHOD,
+
         // type names
         NULL_IDENTIFIER,
-        DATE_IDENTIFIER,
-        NUMBER_IDENTIFIER,
+        INT_IDENTIFIER,
+        FLOAT_IDENTIFIER,
+        DOUBLE_IDENTIFIER,
         BOOLEAN_IDENTIFIER,
         STRING_IDENTIFIER,
 
@@ -101,21 +103,9 @@ public class Main {
         IDENTIFIER,
 
         // primitive types
-        NUMBER, // double floating point precision number (javascript's default number)
-        STRING, // anything surrounded by single or double quotes
-        BOOLEAN, // true or false,
-        DATE, // same as javascript's date
-
-        // operators
-        PLUS, // +
-        INCREMENT, // ++
-        MINUS, // -
-        DECREMENT, // --
-        MODULUS, // %
-        DIVISION, // /
-        MULTIPLICATION, // *
-        EXPONENTIATE, // **
-        SQUARE_ROOT, // /**
+        NUMERIC_TYPE,
+        STRING_TYPE, // anything surrounded by single or double quotes
+        BOOLEAN_TYPE, // true or false,
 
         // assignment operators
         ASSIGNMENT, // =
@@ -127,6 +117,17 @@ public class Main {
         MINUS_EQUALS_SIGN, // -=
         INCREMENT_EQUALS_SIGN, // ++=
         DECREMENT_EQUALS_SIGN, // --=
+
+        // operators
+        PLUS, // +
+        INCREMENT, // ++
+        MINUS, // -
+        DECREMENT, // --
+        MODULUS, // %
+        DIVISION, // /
+        MULTIPLICATION, // *
+        EXPONENTIATE, // **
+        SQUARE_ROOT, // /**
 
         // equality assignment
         STRICTLY_EQUALS, // ===
@@ -140,21 +141,21 @@ public class Main {
         LESS_THAN_OR_EQUAL_TO, // <=,
 
         // punctuation
-        SEMICOLON,
-        DOUBLE_COLON,
-        COLON,
-        LPAREN,
-        RPAREN,
-        LBRACE,
-        RBRACE,
-        LBRACKET,
-        RBRACKET,
-        COMMA,
-        DOLLAR_SIGN,
-        BACK_TICK,
-        QUOTE,
-        SINGLE_QUOTE,
-        DOT,
+        SEMICOLON, // ;
+        DOUBLE_COLON, // ::
+        COLON, // :
+        LPAREN, // (
+        RPAREN, // )
+        LBRACE, // {
+        RBRACE, // }
+        LBRACKET, // [
+        RBRACKET, // ]
+        COMMA, // ,
+        DOLLAR_SIGN, // $
+        BACK_TICK, // `
+        QUOTE, // "
+        SINGLE_QUOTE, // '
+        DOT, // .
 
         // composite data types
         STATIC_ARRAY, // instantiated exactly like this: myArrayList::ArrayS[string] = new ArrayS(5);
@@ -190,28 +191,18 @@ public class Main {
 
             // type indentifiers
             Pattern.compile("null"),
-            Pattern.compile("Date"),
-            Pattern.compile("number"),
+            Pattern.compile("int"), // -2147483648 -> 2147483647
+            Pattern.compile("flt"), // -3.4E-38 to 3.4E+38
+            Pattern.compile("dbl"), // 4.94065645841246544e-324 to 1.79769313486231570e+308
             Pattern.compile("boolean"),
             Pattern.compile("string"),
 
             Pattern.compile("cout\\((.*?)\\)"),
             Pattern.compile("[a-zA-Z_][a-zA-Z0-9_]*"), // Identifier
 
-            Pattern.compile("-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?"), // Number
+            Pattern.compile("-?\\d+(\\.\\d+)?([eE][-+]?\\d+)?"), // number identifier
             Pattern.compile("\"(?:\\\\\"|[^\"])*\"|'(?:\\\\'|[^'])*'"), // String
             Pattern.compile("true|false"), // Boolean
-            Pattern.compile("\\d{2}/\\d{2}/\\d{4}"), // Date
-
-            Pattern.compile("\\+"), // Plus
-            Pattern.compile("\\+\\+"), // Increment
-            Pattern.compile("-"), // Minus
-            Pattern.compile("--"), // Decrement
-            Pattern.compile("%"), // Modulus
-            Pattern.compile("/"), // Division
-            Pattern.compile("\\*"), // Multiplication
-            Pattern.compile("\\*\\*"), // Exponentiate
-            Pattern.compile("\\/\\*\\*"), // Square root
 
             Pattern.compile("="), // Assignment
             Pattern.compile("/="), // Divided equals sign
@@ -222,6 +213,16 @@ public class Main {
             Pattern.compile("-="), // Minus equals sign
             Pattern.compile("\\++="), // Increment equals sign
             Pattern.compile("--="), // Decrement equals sign
+
+            Pattern.compile("\\+"), // Plus
+            Pattern.compile("\\+\\+"), // Increment
+            Pattern.compile("-"), // Minus
+            Pattern.compile("--"), // Decrement
+            Pattern.compile("%"), // Modulus
+            Pattern.compile("/"), // Division
+            Pattern.compile("\\*"), // Multiplication
+            Pattern.compile("\\*\\*"), // Exponentiate
+            Pattern.compile("\\/\\*\\*"), // Square root
 
             Pattern.compile("==="), // Strictly equals
             Pattern.compile("!=="), // Strictly not equals
@@ -256,59 +257,61 @@ public class Main {
 
     public static void main(String[] args) {
         Lexer lex = new Lexer();
-        String source_code = "class SecondaryClass { reserved dob::Date; reserved age::number; @this(age::number,dob::Date) { this.age = age; this.dob = dob; } addYearToAge(age::number) :: void { this.age += age; } changeDob(date::Date) :: void { this.dob = date; } pub viewDob() :: Date { return this.dob; } } pub class Main { stat mainMethod() :: void { secondary::SecondaryClass = new SecondaryClass(22, 07/18/01); secondInstanceOfSecondary::SecondaryClass = new SecondaryClass(22, 11/08/2001); name::string=\"jacob lang\"; cout(name); cout(secondary.age); secondary.addYearToAge(1); cout(secondary.age); secondary.changeDob(\"07/18/2001\"); cout(secondary.viewDob); } }";
+        String source_code = "cls SecondaryClass { reserved money::flt; reserved averageSalary::flt = 1.234; age::int; @this(age::int,money::flt) { this.age = age; this.money = money; } addYearToAge(age::int) :: void { this.age += age; } changeMoney(money::flt) :: void { this.money = money; } pub viewMoney() :: flt { return this.money; } } pub cls Main { stat mainMethod() :: void { secondary::SecondaryClass = new SecondaryClass(22, 719.129); secondInstanceOfSecondary::SecondaryClass = new SecondaryClass(22, 992.12); name::string=\"jacob lang\"; cout(name); cout(secondary.age); secondary.addYearToAge(1); cout(secondary.age); secondary.changeMoney(\"37728.12\"); cout(secondary.viewMoney); } }";
         List<Token> tokens = lex.tokenizer(source_code);
         System.out.println(tokens);
     }
 }
 
 /*
- * Token{type=IDENTIFIER, value='class'}, Token{type=IDENTIFIER,
+ * [Token{type=CLS, value='cls'}, Token{type=IDENTIFIER,
  * value='SecondaryClass'}, Token{type=LBRACE, value='{'}, Token{type=RESERVED,
- * value='reserved'}, Token{type=IDENTIFIER, value='dob'},
- * Token{type=DOUBLE_COLON, value='::'}, Token{type=DATE_IDENTIFIER,
- * value='Date'}, Token{type=SEMICOLON, value=';'}, Token{type=RESERVED,
- * value='reserved'}, Token{type=IDENTIFIER, value='age'},
- * Token{type=DOUBLE_COLON, value='::'}, Token{type=NUMBER_IDENTIFIER,
- * value='number'}, Token{type=SEMICOLON, value=';'}, Token{type=THIS_METHOD,
- * value='@this'}, Token{type=LPAREN, value='('}, Token{type=IDENTIFIER,
+ * value='reserved'}, Token{type=IDENTIFIER, value='money'},
+ * Token{type=DOUBLE_COLON, value='::'}, Token{type=FLOAT_IDENTIFIER,
+ * value='flt'}, Token{type=SEMICOLON, value=';'}, Token{type=RESERVED,
+ * value='reserved'}, Token{type=IDENTIFIER, value='averageSalary'},
+ * Token{type=DOUBLE_COLON, value='::'}, Token{type=FLOAT_IDENTIFIER,
+ * value='flt'}, Token{type=ASSIGNMENT, value='='}, Token{type=NUMERIC_TYPE,
+ * value='1.234'}, Token{type=SEMICOLON, value=';'}, Token{type=IDENTIFIER,
  * value='age'}, Token{type=DOUBLE_COLON, value='::'},
- * Token{type=NUMBER_IDENTIFIER, value='number'}, Token{type=COMMA, value=','},
- * Token{type=IDENTIFIER, value='dob'}, Token{type=DOUBLE_COLON, value='::'},
- * Token{type=DATE_IDENTIFIER, value='Date'}, Token{type=RPAREN, value=')'},
+ * Token{type=INT_IDENTIFIER, value='int'}, Token{type=SEMICOLON, value=';'},
+ * Token{type=THIS_METHOD, value='@this'}, Token{type=LPAREN, value='('},
+ * Token{type=IDENTIFIER, value='age'}, Token{type=DOUBLE_COLON, value='::'},
+ * Token{type=INT_IDENTIFIER, value='int'}, Token{type=COMMA, value=','},
+ * Token{type=IDENTIFIER, value='money'}, Token{type=DOUBLE_COLON, value='::'},
+ * Token{type=FLOAT_IDENTIFIER, value='flt'}, Token{type=RPAREN, value=')'},
  * Token{type=LBRACE, value='{'}, Token{type=THIS, value='this'},
  * Token{type=DOT, value='.'}, Token{type=IDENTIFIER, value='age'},
  * Token{type=ASSIGNMENT, value='='}, Token{type=IDENTIFIER, value='age'},
  * Token{type=SEMICOLON, value=';'}, Token{type=THIS, value='this'},
- * Token{type=DOT, value='.'}, Token{type=IDENTIFIER, value='dob'},
- * Token{type=ASSIGNMENT, value='='}, Token{type=IDENTIFIER, value='dob'},
+ * Token{type=DOT, value='.'}, Token{type=IDENTIFIER, value='money'},
+ * Token{type=ASSIGNMENT, value='='}, Token{type=IDENTIFIER, value='money'},
  * Token{type=SEMICOLON, value=';'}, Token{type=RBRACE, value='}'},
  * Token{type=IDENTIFIER, value='addYearToAge'}, Token{type=LPAREN, value='('},
  * Token{type=IDENTIFIER, value='age'}, Token{type=DOUBLE_COLON, value='::'},
- * Token{type=NUMBER_IDENTIFIER, value='number'}, Token{type=RPAREN, value=')'},
+ * Token{type=INT_IDENTIFIER, value='int'}, Token{type=RPAREN, value=')'},
  * Token{type=DOUBLE_COLON, value='::'}, Token{type=VOID, value='void'},
  * Token{type=LBRACE, value='{'}, Token{type=THIS, value='this'},
  * Token{type=DOT, value='.'}, Token{type=IDENTIFIER, value='age'},
- * Token{type=PLUS, value='+'}, Token{type=ASSIGNMENT, value='='},
- * Token{type=IDENTIFIER, value='age'}, Token{type=SEMICOLON, value=';'},
- * Token{type=RBRACE, value='}'}, Token{type=IDENTIFIER, value='changeDob'},
- * Token{type=LPAREN, value='('}, Token{type=IDENTIFIER, value='date'},
- * Token{type=DOUBLE_COLON, value='::'}, Token{type=DATE_IDENTIFIER,
- * value='Date'}, Token{type=RPAREN, value=')'}, Token{type=DOUBLE_COLON,
- * value='::'}, Token{type=VOID, value='void'}, Token{type=LBRACE, value='{'},
- * Token{type=THIS, value='this'}, Token{type=DOT, value='.'},
- * Token{type=IDENTIFIER, value='dob'}, Token{type=ASSIGNMENT, value='='},
- * Token{type=IDENTIFIER, value='date'}, Token{type=SEMICOLON, value=';'},
- * Token{type=RBRACE, value='}'}, Token{type=PUB, value='pub'},
- * Token{type=IDENTIFIER, value='viewDob'}, Token{type=LPAREN, value='('},
- * Token{type=RPAREN, value=')'}, Token{type=DOUBLE_COLON, value='::'},
- * Token{type=DATE_IDENTIFIER, value='Date'}, Token{type=LBRACE, value='{'},
- * Token{type=IDENTIFIER, value='return'}, Token{type=THIS, value='this'},
- * Token{type=DOT, value='.'}, Token{type=IDENTIFIER, value='dob'},
+ * Token{type=PLUS_EQUALS_SIGN, value='+='}, Token{type=IDENTIFIER,
+ * value='age'}, Token{type=SEMICOLON, value=';'}, Token{type=RBRACE,
+ * value='}'}, Token{type=IDENTIFIER, value='changeMoney'}, Token{type=LPAREN,
+ * value='('}, Token{type=IDENTIFIER, value='money'}, Token{type=DOUBLE_COLON,
+ * value='::'}, Token{type=FLOAT_IDENTIFIER, value='flt'}, Token{type=RPAREN,
+ * value=')'}, Token{type=DOUBLE_COLON, value='::'}, Token{type=VOID,
+ * value='void'}, Token{type=LBRACE, value='{'}, Token{type=THIS, value='this'},
+ * Token{type=DOT, value='.'}, Token{type=IDENTIFIER, value='money'},
+ * Token{type=ASSIGNMENT, value='='}, Token{type=IDENTIFIER, value='money'},
  * Token{type=SEMICOLON, value=';'}, Token{type=RBRACE, value='}'},
- * Token{type=RBRACE, value='}'}, Token{type=PUB, value='pub'},
- * Token{type=IDENTIFIER, value='class'}, Token{type=IDENTIFIER, value='Main'},
- * Token{type=LBRACE, value='{'}, Token{type=STAT, value='stat'},
+ * Token{type=PUB, value='pub'}, Token{type=IDENTIFIER, value='viewMoney'},
+ * Token{type=LPAREN, value='('}, Token{type=RPAREN, value=')'},
+ * Token{type=DOUBLE_COLON, value='::'}, Token{type=FLOAT_IDENTIFIER,
+ * value='flt'}, Token{type=LBRACE, value='{'}, Token{type=IDENTIFIER,
+ * value='return'}, Token{type=THIS, value='this'}, Token{type=DOT, value='.'},
+ * Token{type=IDENTIFIER, value='money'}, Token{type=SEMICOLON, value=';'},
+ * Token{type=RBRACE, value='}'}, Token{type=RBRACE, value='}'}, Token{type=PUB,
+ * value='pub'}, Token{type=CLS, value='cls'}, Token{type=IDENTIFIER,
+ * value='Main'}, Token{type=LBRACE, value='{'}, Token{type=STAT, value='stat'},
  * Token{type=IDENTIFIER, value='mainMethod'}, Token{type=LPAREN, value='('},
  * Token{type=RPAREN, value=')'}, Token{type=DOUBLE_COLON, value='::'},
  * Token{type=VOID, value='void'}, Token{type=LBRACE, value='{'},
@@ -316,36 +319,73 @@ public class Main {
  * value='::'}, Token{type=IDENTIFIER, value='SecondaryClass'},
  * Token{type=ASSIGNMENT, value='='}, Token{type=NEW, value='new'},
  * Token{type=IDENTIFIER, value='SecondaryClass'}, Token{type=LPAREN,
- * value='('}, Token{type=NUMBER, value='22'}, Token{type=COMMA, value=','},
- * Token{type=NUMBER, value='0'}, Token{type=NUMBER, value='7'},
- * Token{type=DIVISION, value='/'}, Token{type=NUMBER, value='18'},
- * Token{type=DIVISION, value='/'}, Token{type=NUMBER, value='0'},
- * Token{type=NUMBER, value='1'}, Token{type=RPAREN, value=')'},
- * Token{type=SEMICOLON, value=';'}, Token{type=IDENTIFIER,
+ * value='('}, Token{type=NUMERIC_TYPE, value='22'}, Token{type=COMMA,
+ * value=','}, Token{type=NUMERIC_TYPE, value='719.129'}, Token{type=RPAREN,
+ * value=')'}, Token{type=SEMICOLON, value=';'}, Token{type=IDENTIFIER,
  * value='secondInstanceOfSecondary'}, Token{type=DOUBLE_COLON, value='::'},
  * Token{type=IDENTIFIER, value='SecondaryClass'}, Token{type=ASSIGNMENT,
  * value='='}, Token{type=NEW, value='new'}, Token{type=IDENTIFIER,
- * value='SecondaryClass'}, Token{type=LPAREN, value='('}, Token{type=NUMBER,
- * value='22'}, Token{type=COMMA, value=','}, Token{type=NUMBER, value='11'},
- * Token{type=DIVISION, value='/'}, Token{type=NUMBER, value='0'},
- * Token{type=NUMBER, value='8'}, Token{type=DIVISION, value='/'},
- * Token{type=NUMBER, value='2001'}, Token{type=RPAREN, value=')'},
+ * value='SecondaryClass'}, Token{type=LPAREN, value='('},
+ * Token{type=NUMERIC_TYPE, value='22'}, Token{type=COMMA, value=','},
+ * Token{type=NUMERIC_TYPE, value='992.12'}, Token{type=RPAREN, value=')'},
  * Token{type=SEMICOLON, value=';'}, Token{type=IDENTIFIER, value='name'},
  * Token{type=DOUBLE_COLON, value='::'}, Token{type=STRING_IDENTIFIER,
- * value='string'}, Token{type=ASSIGNMENT, value='='}, Token{type=STRING,
+ * value='string'}, Token{type=ASSIGNMENT, value='='}, Token{type=STRING_TYPE,
  * value='"jacob lang"'}, Token{type=SEMICOLON, value=';'},
  * Token{type=CONSOLE_OUT, value='cout(name)'}, Token{type=SEMICOLON,
  * value=';'}, Token{type=CONSOLE_OUT, value='cout(secondary.age)'},
  * Token{type=SEMICOLON, value=';'}, Token{type=IDENTIFIER, value='secondary'},
  * Token{type=DOT, value='.'}, Token{type=IDENTIFIER, value='addYearToAge'},
- * Token{type=LPAREN, value='('}, Token{type=NUMBER, value='1'},
+ * Token{type=LPAREN, value='('}, Token{type=NUMERIC_TYPE, value='1'},
  * Token{type=RPAREN, value=')'}, Token{type=SEMICOLON, value=';'},
  * Token{type=CONSOLE_OUT, value='cout(secondary.age)'}, Token{type=SEMICOLON,
  * value=';'}, Token{type=IDENTIFIER, value='secondary'}, Token{type=DOT,
- * value='.'}, Token{type=IDENTIFIER, value='changeDob'}, Token{type=LPAREN,
- * value='('}, Token{type=STRING, value='"07/18/2001"'}, Token{type=RPAREN,
+ * value='.'}, Token{type=IDENTIFIER, value='changeMoney'}, Token{type=LPAREN,
+ * value='('}, Token{type=STRING_TYPE, value='"37728.12"'}, Token{type=RPAREN,
  * value=')'}, Token{type=SEMICOLON, value=';'}, Token{type=CONSOLE_OUT,
- * value='cout(secondary.viewDob)'}, Token{type=SEMICOLON, value=';'},
+ * value='cout(secondary.viewMoney)'}, Token{type=SEMICOLON, value=';'},
  * Token{type=RBRACE, value='}'}, Token{type=RBRACE, value='}'}]
  * 
+ */
+
+/*
+cls SecondaryClass {
+    reserved money:: flt;
+    reserved averageSalary :: flt = 1.234;
+    reserved age :: int;
+
+    @this(age:: int, money:: flt) {
+        this.age = age;
+        this.money = money;
+    }
+    addYearToAge(age::int) :: void {
+        this.age += age;
+    }
+    changeMoney(money:: flt) :: void {
+        this.money = money;
+    }
+    pub viewMoney() :: flt {
+        return this.money;
+    }
+}
+
+//! 313
+pub cls Main {
+    stat mainMethod() :: void {
+        seconary :: SecondaryClass = new SecondaryClass(22, 719.129);
+        secondInstanceOfSecondary :: SecondaryClass = new SecondaryClass(22, 992.12);
+
+        name:: string = "jacob lang";
+
+        cout(name);
+        
+        secondary.addYearToAge(1);
+
+        cout(secondary.age);
+        
+        secondary.changeMoney(37728.12);
+        
+        cout(secondaryViewMoney);
+    }
+}
  */
