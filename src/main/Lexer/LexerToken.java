@@ -6,16 +6,16 @@ public class LexerToken {
     private final LexerMain.TokenType type;
     private final String value;
 
-    LexerToken(LexerMain.TokenType type, String value) {
+    public LexerToken(LexerMain.TokenType type, String value) {
         this.value = value;
         this.type = type;
     }
 
-    String getValue() {
+    public String getValue() {
         return value;
     }
 
-    LexerMain.TokenType getType() {
+    public LexerMain.TokenType getType() {
         return type;
     }
 

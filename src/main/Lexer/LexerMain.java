@@ -252,6 +252,6 @@ public class LexerMain {
         Lexer lex = new Lexer();
         List<LexerToken> tokens = lex.tokenizer(source_code);
         ParserMain parser = new ParserMain(tokens);
-        parser.parse();
+        parser.parseClass();
     }
 }
