@@ -1,5 +1,8 @@
 package main.Lexer;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -58,7 +61,7 @@ public class LexerMain {
         VOID, // used if a method returns nothing
         THIS, // used as "this"
         NEW, // used as new
-        CONST, 
+        CONST,
 
         // singular and multiple methods
         THIS_METHOD,
@@ -160,7 +163,7 @@ public class LexerMain {
             Pattern.compile("void"),
             Pattern.compile("this"),
             Pattern.compile("new"),
-            Pattern.compile("const"), 
+            Pattern.compile("const"),
 
             // this (same as constructor) methods
             Pattern.compile("@this"),
@@ -231,97 +234,24 @@ public class LexerMain {
                     "[a-zA-Z_][a-zA-Z0-9_]*::ArrayD\\[.*?\\]\\s*=\\s*new\\s+ArrayD\\(\\);|[a-zA-Z_][a-zA-Z0-9_]*::ArrayD\\[.*?\\]\\s*=\\s*\\[.*?\\];")
     };
 
+    private static String readSourceCodeFromFile(String filename) {
+        StringBuilder sourceCodeBuilder = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sourceCodeBuilder.append(line).append('\n');
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return sourceCodeBuilder.toString();
+    }
+
     public static void main(String[] args) {
+        String source_code = LexerMain.readSourceCodeFromFile("/media/jacoblang11/working-dir/0-personal-work/dev/Argon/src/main/Lexer/source-code.ar");
         Lexer lex = new Lexer();
-        String source_code = "cls SecondaryClass { reserved money::flt; reserved averageSalary::flt = 1.234; age::int; @this(age::int,money::flt) { this.age = age; this.money = money; } addYearToAge(age::int) :: void { this.age += age; } changeMoney(money::flt) :: void { this.money = money; } pub viewMoney() :: flt { return this.money; } } pub cls Main { stat mainMethod() :: void { secondary::SecondaryClass = new SecondaryClass(22, 719.129); secondInstanceOfSecondary::SecondaryClass = new SecondaryClass(22, 992.12); name::string=\"jacob lang\"; cout(name); cout(secondary.age); secondary.addYearToAge(1); cout(secondary.age); secondary.changeMoney(\"37728.12\"); cout(secondary.viewMoney); } }";
         List<LexerToken> tokens = lex.tokenizer(source_code);
         ParserMain parser = new ParserMain(tokens);
-        
+        parser.parse();
     }
 }
-
-/*
- * [Token{type=CLS, value='cls'}, Token{type=IDENTIFIER,
- * value='SecondaryClass'}, Token{type=LBRACE, value='{'}, Token{type=RESERVED,
- * value='reserved'}, Token{type=IDENTIFIER, value='money'},
- * Token{type=DOUBLE_COLON, value='::'}, Token{type=FLOAT_IDENTIFIER,
- * value='flt'}, Token{type=SEMICOLON, value=';'}, Token{type=RESERVED,
- * value='reserved'}, Token{type=IDENTIFIER, value='averageSalary'},
- * Token{type=DOUBLE_COLON, value='::'}, Token{type=FLOAT_IDENTIFIER,
- * value='flt'}, Token{type=ASSIGNMENT, value='='}, Token{type=NUMERIC_TYPE,
- * value='1.234'}, Token{type=SEMICOLON, value=';'}, Token{type=IDENTIFIER,
- * value='age'}, Token{type=DOUBLE_COLON, value='::'},
- * Token{type=INT_IDENTIFIER, value='int'}, Token{type=SEMICOLON, value=';'},
- * Token{type=THIS_METHOD, value='@this'}, Token{type=LPAREN, value='('},
- * Token{type=IDENTIFIER, value='age'}, Token{type=DOUBLE_COLON, value='::'},
- * Token{type=INT_IDENTIFIER, value='int'}, Token{type=COMMA, value=','},
- * Token{type=IDENTIFIER, value='money'}, Token{type=DOUBLE_COLON, value='::'},
- * Token{type=FLOAT_IDENTIFIER, value='flt'}, Token{type=RPAREN, value=')'},
- * Token{type=LBRACE, value='{'}, Token{type=THIS, value='this'},
- * Token{type=DOT, value='.'}, Token{type=IDENTIFIER, value='age'},
- * Token{type=ASSIGNMENT, value='='}, Token{type=IDENTIFIER, value='age'},
- * Token{type=SEMICOLON, value=';'}, Token{type=THIS, value='this'},
- * Token{type=DOT, value='.'}, Token{type=IDENTIFIER, value='money'},
- * Token{type=ASSIGNMENT, value='='}, Token{type=IDENTIFIER, value='money'},
- * Token{type=SEMICOLON, value=';'}, Token{type=RBRACE, value='}'},
- * Token{type=IDENTIFIER, value='addYearToAge'}, Token{type=LPAREN, value='('},
- * Token{type=IDENTIFIER, value='age'}, Token{type=DOUBLE_COLON, value='::'},
- * Token{type=INT_IDENTIFIER, value='int'}, Token{type=RPAREN, value=')'},
- * Token{type=DOUBLE_COLON, value='::'}, Token{type=VOID, value='void'},
- * Token{type=LBRACE, value='{'}, Token{type=THIS, value='this'},
- * Token{type=DOT, value='.'}, Token{type=IDENTIFIER, value='age'},
- * Token{type=PLUS_EQUALS_SIGN, value='+='}, Token{type=IDENTIFIER,
- * value='age'}, Token{type=SEMICOLON, value=';'}, Token{type=RBRACE,
- * value='}'}, Token{type=IDENTIFIER, value='changeMoney'}, Token{type=LPAREN,
- * value='('}, Token{type=IDENTIFIER, value='money'}, Token{type=DOUBLE_COLON,
- * value='::'}, Token{type=FLOAT_IDENTIFIER, value='flt'}, Token{type=RPAREN,
- * value=')'}, Token{type=DOUBLE_COLON, value='::'}, Token{type=VOID,
- * value='void'}, Token{type=LBRACE, value='{'}, Token{type=THIS, value='this'},
- * Token{type=DOT, value='.'}, Token{type=IDENTIFIER, value='money'},
- * Token{type=ASSIGNMENT, value='='}, Token{type=IDENTIFIER, value='money'},
- * Token{type=SEMICOLON, value=';'}, Token{type=RBRACE, value='}'},
- * Token{type=PUB, value='pub'}, Token{type=IDENTIFIER, value='viewMoney'},
- * Token{type=LPAREN, value='('}, Token{type=RPAREN, value=')'},
- * Token{type=DOUBLE_COLON, value='::'}, Token{type=FLOAT_IDENTIFIER,
- * value='flt'}, Token{type=LBRACE, value='{'}, Token{type=IDENTIFIER,
- * value='return'}, Token{type=THIS, value='this'}, Token{type=DOT, value='.'},
- * Token{type=IDENTIFIER, value='money'}, Token{type=SEMICOLON, value=';'},
- * Token{type=RBRACE, value='}'}, Token{type=RBRACE, value='}'}, Token{type=PUB,
- * value='pub'}, Token{type=CLS, value='cls'}, Token{type=IDENTIFIER,
- * value='Main'}, Token{type=LBRACE, value='{'}, Token{type=STAT, value='stat'},
- * Token{type=IDENTIFIER, value='mainMethod'}, Token{type=LPAREN, value='('},
- * Token{type=RPAREN, value=')'}, Token{type=DOUBLE_COLON, value='::'},
- * Token{type=VOID, value='void'}, Token{type=LBRACE, value='{'},
- * Token{type=IDENTIFIER, value='secondary'}, Token{type=DOUBLE_COLON,
- * value='::'}, Token{type=IDENTIFIER, value='SecondaryClass'},
- * Token{type=ASSIGNMENT, value='='}, Token{type=NEW, value='new'},
- * Token{type=IDENTIFIER, value='SecondaryClass'}, Token{type=LPAREN,
- * value='('}, Token{type=NUMERIC_TYPE, value='22'}, Token{type=COMMA,
- * value=','}, Token{type=NUMERIC_TYPE, value='719.129'}, Token{type=RPAREN,
- * value=')'}, Token{type=SEMICOLON, value=';'}, Token{type=IDENTIFIER,
- * value='secondInstanceOfSecondary'}, Token{type=DOUBLE_COLON, value='::'},
- * Token{type=IDENTIFIER, value='SecondaryClass'}, Token{type=ASSIGNMENT,
- * value='='}, Token{type=NEW, value='new'}, Token{type=IDENTIFIER,
- * value='SecondaryClass'}, Token{type=LPAREN, value='('},
- * Token{type=NUMERIC_TYPE, value='22'}, Token{type=COMMA, value=','},
- * Token{type=NUMERIC_TYPE, value='992.12'}, Token{type=RPAREN, value=')'},
- * Token{type=SEMICOLON, value=';'}, Token{type=IDENTIFIER, value='name'},
- * Token{type=DOUBLE_COLON, value='::'}, Token{type=STRING_IDENTIFIER,
- * value='string'}, Token{type=ASSIGNMENT, value='='}, Token{type=STRING_TYPE,
- * value='"jacob lang"'}, Token{type=SEMICOLON, value=';'},
- * Token{type=CONSOLE_OUT, value='cout(name)'}, Token{type=SEMICOLON,
- * value=';'}, Token{type=CONSOLE_OUT, value='cout(secondary.age)'},
- * Token{type=SEMICOLON, value=';'}, Token{type=IDENTIFIER, value='secondary'},
- * Token{type=DOT, value='.'}, Token{type=IDENTIFIER, value='addYearToAge'},
- * Token{type=LPAREN, value='('}, Token{type=NUMERIC_TYPE, value='1'},
- * Token{type=RPAREN, value=')'}, Token{type=SEMICOLON, value=';'},
- * Token{type=CONSOLE_OUT, value='cout(secondary.age)'}, Token{type=SEMICOLON,
- * value=';'}, Token{type=IDENTIFIER, value='secondary'}, Token{type=DOT,
- * value='.'}, Token{type=IDENTIFIER, value='changeMoney'}, Token{type=LPAREN,
- * value='('}, Token{type=STRING_TYPE, value='"37728.12"'}, Token{type=RPAREN,
- * value=')'}, Token{type=SEMICOLON, value=';'}, Token{type=CONSOLE_OUT,
- * value='cout(secondary.viewMoney)'}, Token{type=SEMICOLON, value=';'},
- * Token{type=RBRACE, value='}'}, Token{type=RBRACE, value='}'}]
- * 
- */
-

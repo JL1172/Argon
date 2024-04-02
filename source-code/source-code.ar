@@ -1,22 +1,20 @@
- //note that variables declared in methods are block scoped so they dont need any access modifiers
- //package (or directory private)
+
+
  cls SecondaryClass {
 
-        //no access modifier prefix = it is specific to that file
-        //reserved = specific to class
+       
+       
         reserved dob::Date;
         age::number;
 
-        //then singular is the equivalent of constructor() {} in javascript, where those inputted values at the time of class instantiation are inputted at the 
-        //constructor level, so now those variables are inputted as this.age and this.dob the values initialized above
         @this(age::number,dob::Date) {
             this.age = age;
             this.dob = dob;
         }
 
-        //because this is not prefixed by an access modifier this is a package-private method
+       
         addYearToAge(age::number) :: void {
-            //this increments and assigns the incremented value to the this.age variable
+           
             this.age+=age;
         }
 
@@ -26,26 +24,26 @@
         pub viewDob() :: Date {
             return this.dob;
         }
-        //this method is the main method and the stat keyword means static and is inherently public, so this is the method the compiler needs to look for
+       
     }
     pub cls Main {
-        //static to main
+       
         stat mainMethod() :: void {
 
             secondary::SecondaryClass = new SecondaryClass(22, 07/18/01);
             secondInstanceOfSecondary::SecondaryClass = new SecondaryClass(22, 11/08/2001);
 
             name::string="jacob lang";
-            cout(name); //outputs "jacob lang"
+            cout(name);
 
-            cout(secondary.age); //outputs 22;
+            cout(secondary.age);
 
             secondary.addYearToAge(1);
-            cout(secondary.age); //outputs 23
+            cout(secondary.age);
 
             secondary.changeDob("07/18/2001");
-            cout(secondary.viewDob); //returns 07/18/2001
+            cout(secondary.viewDob);
 
-            //cout(secondary.dob) //throws error because dob is reserved
+           
         }
     }
