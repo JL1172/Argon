@@ -3,6 +3,7 @@ package main.Parser;
 import main.Lexer.LexerToken;
 import main.Lexer.LexerMain.TokenType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -40,6 +41,7 @@ public class ParserMain {
     private int index;
     private HashMap<String, String> matching_symbols = new HashMap<>();
     private Stack stack = new Stack();
+    private List<Node> AST = new ArrayList<Node>();
 
     public ParserMain(List<LexerToken> tokens) {
         matching_symbols.put("}", "{");
@@ -73,10 +75,21 @@ public class ParserMain {
         
         // expects "{" and adds to stack to keep track of characters
         this.parseLBrace();
+        
+        List<Node> classBody = parseClassBody();
+        
+        this.parseRBrace();
+
+        //might change
+        // this.AST.add(classBody);
     }
     
-    private void parseClassBody() {
-
+    private List<Node> parseClassBody() {
+        List<Node> classBody = new ArrayList<>();
+        while (this.hasMoreTokens()) {
+            // classBody.add(this.parseClassMember());
+        }
+        return classBody;
     }
     
     //* sub methods *//
@@ -162,6 +175,10 @@ public class ParserMain {
     /* error handling */
     private void reportError(String message, TokenType token) {
         throw new RuntimeException(String.format(message + " %s", token));
+    }
+
+    private boolean hasMoreTokens() {
+        return this.index < this.tokenList.size();
     }
 
     private LexerToken peek() {

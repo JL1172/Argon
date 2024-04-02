@@ -26,6 +26,8 @@ The main part of the lexer consists of a tokenization method. This method iterat
 
 #  Parser Architecture Overview
 
+**see more detailed explanations on the parser in [this folder](parser/parser.md)**
+
 ## Parsing Technique (Recursive Descent Parsing)
 
 ## Data Structures to represent AST nodes

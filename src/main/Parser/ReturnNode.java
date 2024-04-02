@@ -1,5 +1,4 @@
 package main.Parser;
 
-public class ReturnNode extends Node {
-    
+public class ReturnNode {
 }
