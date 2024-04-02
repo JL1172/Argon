@@ -57,8 +57,7 @@ public class ParserMain {
         // parseMethodDeclaration();
     }
 
-    // !class declaration methods
-    //* entry */
+    //* main methods //
     private void parseClassDeclaration() {
         // optional access modifier + cls keyword + PascalCase IDENTIFIER + { ...
         // methods ,field names, etc. + }
@@ -72,9 +71,15 @@ public class ParserMain {
         // expect identifier name to be legal and returns parsed Identifier name
         this.parseClassName(TokenType.IDENTIFIER);
         
+        // expects "{" and adds to stack to keep track of characters
         this.parseLBrace();
     }
+    
+    private void parseClassBody() {
 
+    }
+    
+    //* sub methods *//
     private void parseClassName(TokenType expectToken) {
         LexerToken peek = this.peek();
         if (peek.getType() != expectToken) {
@@ -93,15 +98,6 @@ public class ParserMain {
                     null);
         }
     }
-    // ! end of class methods
-
-    //! class body methods
-    //* entry */
-    private void parseClassBody() {
-
-    }
-
-    //! field name methods 
 
     private void parseFieldNameDeclaration() {
         // optional access modifier + optional stat keyword + optional const keyword +
@@ -110,7 +106,6 @@ public class ParserMain {
         
     }
 
-    //! field name methods 
     private void parseThisMethodDeclaration() {
         // optional access modifier + optional stat keyword + IDENTIFIER + ( optional
         // parameter:: type) :: type {...code, optional return if type is not void}
@@ -136,7 +131,6 @@ public class ParserMain {
         // = new + className + ( + ); : typename + = + respective type )
     }
 
-    // ! global utility methods
     private void parseSequenceBracketsBraceParenthesis(String symbol) {
         String returnValueFromStackPop = this.stack.pop();
         if (!(this.matching_symbols.get(symbol).equals(returnValueFromStackPop))) {
@@ -167,11 +161,9 @@ public class ParserMain {
     }
     /* error handling */
     private void reportError(String message, TokenType token) {
-        // System.err.println(message + " " + token);
         throw new RuntimeException(String.format(message + " %s", token));
     }
 
-    // ! safe utility fn to return the current token
     private LexerToken peek() {
         if (this.tokenList.size() > 0) {
             return this.tokenList.get(index);
@@ -180,7 +172,6 @@ public class ParserMain {
         }
     }
 
-    // ! test function
     private void expect(TokenType expectedType) {
         LexerToken token = this.peek();
         if (token.getType() != expectedType) {
@@ -190,7 +181,6 @@ public class ParserMain {
         }
         this.index++;
     }
-
     public static void main(String[] args) {
         System.out.println("hello world from parse");
     }
