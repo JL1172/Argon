@@ -1,45 +1,19 @@
+package main.Lexer;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//util class
-class Token {
-
-    // private final because encapsulation
-    private final LexerMain.TokenType type;
-    private final String value;
-
-    Token(LexerMain.TokenType type, String value) {
-        this.value = value;
-        this.type = type;
-    }
-
-    String getValue() {
-        return value;
-    }
-
-    LexerMain.TokenType getType() {
-        return type;
-    }
-
-    // overriding the toString() method to be concatenation of type and value;
-    @Override
-    public String toString() {
-        return "Token{" +
-                "type=" + type +
-                ", value='" + value + '\'' + '}';
-    }
-}
+import main.Parser.ParserMain;
 
 class Lexer {
 
     // this wont be static because i am using an instance of this class
     // this wont be public because i want it to be package private
 
-    List<Token> tokenizer(String input) {
-        List<Token> tokens = new ArrayList<>();
+    List<LexerToken> tokenizer(String input) {
+        List<LexerToken> tokens = new ArrayList<>();
 
         int currentPosition = 0;
         int inputLength = input.length();
@@ -60,7 +34,7 @@ class Lexer {
                     // i am then grabbing the value of the matched pattern which is 1:1 with the
                     // compiled regex patterns in the PATTERNS field
                     LexerMain.TokenType tokenType = LexerMain.TokenType.values()[i];
-                    tokens.add(new Token(tokenType, tokenValue));
+                    tokens.add(new LexerToken(tokenType, tokenValue));
                     currentPosition += tokenValue.length();
                     break;
                 }
@@ -73,7 +47,7 @@ class Lexer {
 }
 
 public class LexerMain {
-    static enum TokenType {
+    public static enum TokenType {
 
         // keywords
         CLS, // short for class
@@ -260,8 +234,9 @@ public class LexerMain {
     public static void main(String[] args) {
         Lexer lex = new Lexer();
         String source_code = "cls SecondaryClass { reserved money::flt; reserved averageSalary::flt = 1.234; age::int; @this(age::int,money::flt) { this.age = age; this.money = money; } addYearToAge(age::int) :: void { this.age += age; } changeMoney(money::flt) :: void { this.money = money; } pub viewMoney() :: flt { return this.money; } } pub cls Main { stat mainMethod() :: void { secondary::SecondaryClass = new SecondaryClass(22, 719.129); secondInstanceOfSecondary::SecondaryClass = new SecondaryClass(22, 992.12); name::string=\"jacob lang\"; cout(name); cout(secondary.age); secondary.addYearToAge(1); cout(secondary.age); secondary.changeMoney(\"37728.12\"); cout(secondary.viewMoney); } }";
-        List<Token> tokens = lex.tokenizer(source_code);
-        System.out.println(tokens);
+        List<LexerToken> tokens = lex.tokenizer(source_code);
+        ParserMain parser = new ParserMain(tokens);
+        
     }
 }
 

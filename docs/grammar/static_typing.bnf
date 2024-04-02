@@ -1,0 +1,13 @@
+declaration ::= variable_declaration | field_declaration
+
+variable_declaration ::= access_modifier IDENTIFIER "::" type_specifier 
+
+type_specifier ::= INT_IDENTIFIER
+                 | FLOAT_IDENTIFIER
+                 | DOUBLE_IDENTIFIER
+                 | BOOLEAN_IDENTIFIER
+                 | STRING_IDENTIFIER
+                 | STATIC_ARRAY LBRACKET type_specifier RBRACKET
+                 | DYNAMIC_ARRAY LBRACKET type_specifier RBRACKET
+
+expression ::= /* expression rules go here */
