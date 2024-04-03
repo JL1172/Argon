@@ -1,7 +1,7 @@
-    pub cls Main {
-        reserved stat const myName::int = 5;
-        stat mainMethod() :: void {
-            cout("hello world");
-        }
+pub cls Main {
+    reserved stat const myName::int = 5;
+    stat mainMethod() :: void {
+        cout("hello world");
     }
+}
 
