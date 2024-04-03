@@ -40,13 +40,5 @@
   2. Test for method name = `_access modifier? + stat? + identifier + ( + ...parameters::type) :: + typeName {...codebody and return type matches typeName};`
 
 - end tree should be 
-                            (class declaration)
-                           /                   \
-                    ...field name            ...method declaration
-                /                              \
-   @thismethod -> adjust field name             parameter
-                                                \ 
-                                                variables - this keyword? -> view fieldName and update it accordingly
-                                                    \ 
-                                                    return type? -> circle back to method declaration and its type and ensure its typed properly | & cout? update console accordingly after parsing and verifying value
+![AST](<Screenshot from 2024-04-03 09-01-15.png>)
                                         
