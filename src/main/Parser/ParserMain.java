@@ -47,7 +47,7 @@ public class ParserMain {
     private int index;
     private HashMap<String, String> matching_symbols = new HashMap<>();
     private Stack stack = new Stack();
-    private List<Node> AST = new ArrayList<Node>();
+
     // ! this is going to keep track of all field names method names and then insert
     // them into a larger container.
     private List<FieldNameObjectNode> fieldNameRecords = new ArrayList<>();
@@ -228,7 +228,8 @@ public class ParserMain {
             } else {
                 fieldNameNode.semi_colon = isEndOfFieldNameOrValueIsAssigned;
             }
-            fieldNameNode.returnMethodDeclarationValues();
+            //TODO this is where i left off
+            System.out.println(fieldNameNode.toString());
         }
     }
 
