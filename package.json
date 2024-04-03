@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "compile": "javac src/main/Lexer/*.java src/main/Parser/*.java",
+    "compile": "javac src/main/Lexer/*.java src/main/Parser/*.java src/main/AST/*.java src/main/IntermediateASTNodes/*.java",
     "java-l" : "cd src && java main/Lexer/LexerMain"
   },
   "keywords": [],

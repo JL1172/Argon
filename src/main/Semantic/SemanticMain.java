@@ -1,4 +1,4 @@
-package Semantic;
+package main.Semantic;
 
 public class SemanticMain {
     public static void main(String[] args) {

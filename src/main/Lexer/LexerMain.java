@@ -77,13 +77,13 @@ public class LexerMain {
         // output statement
         CONSOLE_OUT,
 
-        // identifier for name of method or class or property
-        IDENTIFIER,
-
         // primitive types
         NUMERIC_TYPE,
         STRING_TYPE, // anything surrounded by single or double quotes
         BOOLEAN_TYPE, // true or false,
+        // identifier for name of method or class or property
+        IDENTIFIER,
+
 
         // assignment operators
         ASSIGNMENT, // =
@@ -177,11 +177,13 @@ public class LexerMain {
             Pattern.compile("string"),
 
             Pattern.compile("cout\\((.*?)\\)"),
-            Pattern.compile("[a-zA-Z_][a-zA-Z0-9_]*"), // Identifier
 
             Pattern.compile("-?\\d+(\\.\\d+)?([eE][-+]?\\d+)?"), // number identifier
             Pattern.compile("\"(?:\\\\\"|[^\"])*\"|'(?:\\\\'|[^'])*'"), // String
             Pattern.compile("true|false"), // Boolean
+            
+            Pattern.compile("[a-zA-Z_][a-zA-Z0-9_]*"), // Identifier
+
 
             Pattern.compile("="), // Assignment
             Pattern.compile("/="), // Divided equals sign

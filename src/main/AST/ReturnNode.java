@@ -1,4 +1,4 @@
-package main.Parser;
+package main.AST;
 
 public class ReturnNode {
 }
