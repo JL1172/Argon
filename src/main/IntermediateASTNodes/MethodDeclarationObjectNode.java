@@ -50,14 +50,12 @@ public class MethodDeclarationObjectNode extends ObjectNodeTemplate {
                 "nodeType='" + nodeType + "'," + '\n' +
                 "access modifier='" + accessModifier + "'," + '\n' +
                 "keyword='" + keyword + "'," + '\n' +
-                "immutability keyword='" + immutability_keyword + "'," + '\n' +
                 "identifier='" + identifier + "'," + '\n' +
-                "type_annotation='" + type_annotations + "'," + '\n' +
+                "parameterbody'" + this.parameterBody.toString() + "'," + "\n" +
                 "type='" + type + "'," + '\n' +
-                "assignment='" + assignment + "'," + '\n' +
-                "value='" + value + "'," + '\n' +
-                accessModifier + " " + keyword + " " + immutability_keyword + " " + identifier + " "
-                + type_annotations + " " + type + " " + assignment + " " + value + " "
+                "statement='" + this.statementNodes.toString() + "'," + '\n' +
+                accessModifier + " " + keyword + " " + identifier + " "
+                + " " + type + " "
                 + '}';
     }
 }

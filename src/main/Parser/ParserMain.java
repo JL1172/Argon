@@ -1,10 +1,12 @@
 package main.Parser;
 
+import main.IntermediateASTNodes.ClassDeclarationNode;
 import main.IntermediateASTNodes.FieldNameObjectNode;
+import main.IntermediateASTNodes.IntermediateAST;
 import main.IntermediateASTNodes.MethodDeclarationObjectNode;
 import main.IntermediateASTNodes.MethodParamObjectNode;
 import main.IntermediateASTNodes.NodeTypeEnum;
-import main.IntermediateASTNodes.ObjectNodeTemplate;
+import main.IntermediateASTNodes.StatementNode;
 import main.IntermediateASTNodes.TemporalObjectNode;
 import main.Lexer.LexerToken;
 import main.Lexer.LexerMain.TokenType;
@@ -53,7 +55,8 @@ public class ParserMain {
     // them into a larger container.
     private List<FieldNameObjectNode> fieldNameRecords = new ArrayList<>();
     private List<MethodDeclarationObjectNode> methodNodes = new ArrayList<>();
-    private List<ObjectNodeTemplate> intermediateASTContainer = new ArrayList<>();
+    private List<ClassDeclarationNode> classNodes = new ArrayList<>();
+    private IntermediateAST intermediateAST = new IntermediateAST(null);
     private TemporalObjectNode temporalContainer;
     private long startTime;
 
@@ -75,14 +78,21 @@ public class ParserMain {
     /* main methods */
     /*                                                                                       */
     private void parseClassDeclaration() {
+        ClassDeclarationNode classNode = new ClassDeclarationNode(null, null, null, null);
         // expect pub keyword
         TokenType[] allowedTokens = { TokenType.PUB };
-        this.parseAccessModifier(allowedTokens);
+        TokenType accessModifier = this.parseAccessModifier(allowedTokens);
+        if (accessModifier != null) {
+            classNode.accessModifier = accessModifier;
+        }
         // expect cls keyword
         this.expect(TokenType.CLS);
 
         // expect identifier name to be legal and returns parsed Identifier name
         this.parseClassName(TokenType.IDENTIFIER);
+
+        LexerToken lastToken = this.peekLastValue();
+        classNode.identifier = lastToken.getValue();
 
         // expects "{" and adds to stack to keep track of characters
         this.parseLBrace();
@@ -90,16 +100,40 @@ public class ParserMain {
         // call method to parse body of class
         this.parseClassBody();
 
-        // this.parseRBrace();
+        this.parseRBrace();
 
+        classNode.fieldNameList = fieldNameRecords;
+        classNode.methodList = methodNodes;
+
+        this.classNodes.add(classNode);
+        this.intermediateAST.classNode = this.classNodes;
+        // System.out.println(this.intermediateAST.toString());
+        int n = this.intermediateAST.classNode.size();
+        List<String> valuesToPrintToConsole = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < this.intermediateAST.classNode.get(i).methodList.size(); j++) {
+                // System.out.println(this.intermediateAST.classNode.get(i).methodList.get(j).statementNodes.get(0).coutParameters);
+                for (int k = 0; k < this.intermediateAST.classNode.get(i).methodList.get(j).statementNodes
+                        .size(); k++) {
+                    valuesToPrintToConsole.add(
+                            this.intermediateAST.classNode.get(i).methodList.get(j).statementNodes.get(k).coutParameters
+                                    .toString());
+                }
+            }
+        }
+        //output!!!
+        valuesToPrintToConsole.stream().forEach(node -> System.out.println(node));
+        System.out.println(String.format("Time to compile %s ms",
+                TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - this.startTime)));
     }
 
     private void parseClassBody() {
         // this method deals with the two directions this can go a field name or method
         // name, fortunately field names can only be initialized before methods, after
         // or between
-        this.parseFieldNamesOrMethodNames();
-        // return classBody;
+        while (this.hasMoreTokens()) {
+            this.parseFieldNamesOrMethodNames();
+        }
     }
 
     /*                                                                                                               */
@@ -203,25 +237,36 @@ public class ParserMain {
             // add parameter body to method declaration node
             methodDeclarationNode.parameterBody = parameterNodes;
 
-
             TokenType[] allowedMethodTypes = { TokenType.STRING_IDENTIFIER, TokenType.INT_IDENTIFIER,
-                TokenType.FLOAT_IDENTIFIER, TokenType.DOUBLE_IDENTIFIER, TokenType.BOOLEAN_IDENTIFIER, TokenType.VOID };
+                    TokenType.FLOAT_IDENTIFIER, TokenType.DOUBLE_IDENTIFIER, TokenType.BOOLEAN_IDENTIFIER,
+                    TokenType.VOID };
 
             this.expect(TokenType.DOUBLE_COLON);
             TokenType assertedMethodType = this.parseFieldNameStaticType(allowedMethodTypes);
             if (assertedMethodType == null) {
                 this.reportError("Syntax Error: Type Expected For Method.", assertedMethodType);
-            } 
+            }
             methodDeclarationNode.type = assertedMethodType;
             this.parseLBrace();
 
-            //! THIS IS MY NEXT BIG THING
-            //TODO 
-            //now need to parse actual code, there could be variables, console statements like cout
+            // ! As of the current version 0.0.01, I am only allowing "cout" statments
+            // TODO
+            // now need to parse actual code, there could be variables, console statements
+            // like cout
 
-            //? DEBUG print for debug
-            System.out.println(methodDeclarationNode);
-
+            List<StatementNode> coutStatementNodeList = new ArrayList<>();
+            while (this.peek().getType() != TokenType.RBRACE) {
+                if (this.peek().getType() != TokenType.CONSOLE_OUT) {
+                    this.reportError("Compilation Error: This Version Only Allows 'cout' in method body.",
+                            TokenType.CONSOLE_OUT);
+                }
+                String valueFromCout = this.parseConsoleOutToken();
+                coutStatementNodeList.add(new StatementNode(TokenType.CONSOLE_OUT, valueFromCout));
+                this.expect(TokenType.SEMICOLON);
+            }
+            this.parseRBrace();
+            methodDeclarationNode.statementNodes = coutStatementNodeList;
+            this.methodNodes.add(methodDeclarationNode);
         } else if (nodeType == NodeTypeEnum.FIELD_NAME) {
 
             this.temporalContainer.nodeType = NodeTypeEnum.FIELD_NAME;
@@ -308,14 +353,9 @@ public class ParserMain {
             }
             // add it to field name records
             this.fieldNameRecords.add(fieldNameNode);
-            System.out.println(this.fieldNameRecords.toString());
             // clear fieldname node for spatial complexity purposes
             // end of else if block if its fieldname
         }
-        //TODO need to add the fieldnames and methods to the intermediate AST list of nodes
-        System.out.println(this.fieldNameRecords.toString());
-        System.out.println(String.format("Time to compile %s ms",
-                TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - this.startTime)));
     }
 
     /*                                                                                                               */
@@ -420,6 +460,39 @@ public class ParserMain {
             }
         }
         this.reportError("Syntax Error: Type Expected Following '::' Token, Received:", null);
+        return null;
+    }
+
+    private String parseConsoleOutToken() {
+        LexerToken token = this.peek();
+        String tokenValue = token.getValue();
+        Pattern coutValuePattern = Pattern.compile("cout\\(\"([^\"]*)\"\\)");
+        Pattern coutValueForVariables = Pattern.compile("cout\\(([^\"]*)\\)");
+        Matcher valueMatcher = coutValuePattern.matcher(tokenValue);
+        Matcher valuMatcherForVariables = coutValueForVariables.matcher(tokenValue);
+        String valueFound = "";
+        if (valueMatcher.find()) {
+            valueFound = valueMatcher.group(1);
+        } else if (valuMatcherForVariables.find()) {
+            valueFound = valuMatcherForVariables.group(1);
+            valueFound = this.parseConsoleOutValueVariableName(valueFound);
+        }
+        this.index++;
+        return valueFound;
+    }
+
+    private String parseConsoleOutValueVariableName(String identifierName) {
+        if (this.fieldNameRecords.isEmpty()) {
+            this.reportError(String.format("Compilation Error: Field Name %s does not exist", identifierName), null);
+        }
+        for (int i = 0; i < this.fieldNameRecords.size(); i++) {
+            if (this.fieldNameRecords.get(i).identifier.equals(identifierName)) {
+                return this.fieldNameRecords.get(i).value + "";
+            }
+        }
+        this.reportError(
+                String.format("Compilation Error: Received Token %s, This Value Was Not Initialized", identifierName),
+                null);
         return null;
     }
 
@@ -588,7 +661,7 @@ public class ParserMain {
     }
 
     private boolean hasMoreTokens() {
-        return this.index < this.tokenList.size();
+        return this.index < this.tokenList.size() - 1;
     }
 
     private LexerToken peek() {

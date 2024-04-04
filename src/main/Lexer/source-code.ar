@@ -1,6 +1,19 @@
 pub cls Main {
-    pub stat mainMethod(name :: string, age:: int, email::string) :: void {
-        cout("hello world");
+    reserved stat const myName:: string = "jacob lang";
+    reserved stat const myAge:: int = 22;
+    reserved stat const weight:: flt = 227.4;
+    pub stat pName:: string = "patrick";
+    reserved stat const wifeName:: string = "alaina";
+    pub stat mainMethod() :: void {
+        cout(myName);
+        cout(myAge);
+    }
+    pub stat secondMethod() :: void {
+        cout(weight);
+        cout(wifeName);
+    }
+    pub stat thirdMethod() :: void {
+        cout(pName);
     }
 }
 
