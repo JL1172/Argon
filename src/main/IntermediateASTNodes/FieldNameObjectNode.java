@@ -92,6 +92,20 @@ public class FieldNameObjectNode extends ObjectNodeTemplate {
                 System.out.print("is assigned a value :");
                 System.out.println(is_assigned_a_value);
         }
+        @Override
+        public void clear() {
+                nodeType = null;
+                accessModifier = null;
+                keyword = null;
+                immutability_keyword = null;
+                identifier = null;
+                type = null;
+                type_annotations = null;
+                assignment = null;
+                value = null;
+                semi_colon = null;
+                is_assigned_a_value = false;
+            }
 
         // overriding the toString() method to be concatenation of type and value;
         @Override

@@ -10,6 +10,7 @@ import main.Lexer.LexerToken;
 import main.Lexer.LexerMain.TokenType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -66,10 +67,6 @@ public class ParserMain {
 
     public void parseClass() {
         parseClassDeclaration();
-        // parseClassBody();
-        // parseFieldNameDeclaration();
-        // parseThisMethodDeclaration();
-        // parseMethodDeclaration();
     }
 
     /*                                                                                       */
@@ -88,7 +85,7 @@ public class ParserMain {
         // expects "{" and adds to stack to keep track of characters
         this.parseLBrace();
 
-        // List<Node> classBody =
+        // call method to parse body of class
         this.parseClassBody();
 
         // this.parseRBrace();
@@ -96,7 +93,9 @@ public class ParserMain {
     }
 
     private void parseClassBody() {
-        // search for field names
+        // this method deals with the two directions this can go a field name or method
+        // name, fortunately field names can only be initialized before methods, after
+        // or between
         this.parseFieldNamesOrMethodNames();
         // return classBody;
     }
@@ -108,15 +107,22 @@ public class ParserMain {
         TokenType[] allowedTokensForAccessModifiers = { TokenType.PUB, TokenType.PROT, TokenType.RESERVED };
         // look for access modifier
         TokenType accessModifier = this.parseAccessModifier(allowedTokensForAccessModifiers);
+        // this doesnt have to have an access modifier because default is
+        // package-private
         if (accessModifier != null) {
+            // if there is an access modifier, the the temporary container, which is just
+            // the container that is filled with values before the parser can decide if it
+            // is a method or field name being instantiated
             this.temporalContainer.accessModifier = accessModifier;
         }
         // look for stat keyword
         TokenType statKeyword = this.parseStaticKeyword();
+        // same thing as access modifier method about
         if (statKeyword != null) {
             this.temporalContainer.keyword = statKeyword;
         }
         // look for const keyword
+        // same thing as access modifier method
         TokenType constKeyword = this.parseConstImmutabilityKeyword();
         if (constKeyword != null) {
             this.temporalContainer.immutability_keyword = constKeyword;
@@ -151,14 +157,19 @@ public class ParserMain {
 
             // this now specifies the node and inserts all the values from temporary
             // container to methodnode
+            // this just transfers all the values from the amorphus temporary container to
+            // the semantic method container
             MethodDeclarationObjectNode methodDeclarationNode = new MethodDeclarationObjectNode(
                     this.temporalContainer.nodeType, this.temporalContainer.accessModifier,
                     this.temporalContainer.keyword, null, null, null, null, this.temporalContainer.identifier, null);
 
-            // clearing for memory purposes
+            // clearing for memory purposes, because i no longer need that space being
+            // occupied in memory
             this.temporalContainer.clear();
 
-            methodDeclarationNode.returnMethodDeclarationValues();
+            // this is just a console log for debugging
+            // todo get rid of this shit this is just for debugging
+            System.out.println(methodDeclarationNode.toString());
 
         } else if (nodeType == NodeTypeEnum.FIELD_NAME) {
 
@@ -174,62 +185,83 @@ public class ParserMain {
             // clearing for memory purposes
             this.temporalContainer.clear();
 
+            // allowed primitive types
             TokenType[] allowedTypes = { TokenType.STRING_IDENTIFIER, TokenType.INT_IDENTIFIER,
                     TokenType.FLOAT_IDENTIFIER, TokenType.DOUBLE_IDENTIFIER, TokenType.BOOLEAN_IDENTIFIER };
 
+            // ensures statically typed type is correct
             TokenType asserted_type = this.parseFieldNameStaticType(allowedTypes);
 
+            // if its not null, a little overkill bc it wouldnt make it to null bc of the
+            // error but whatever.
             if (asserted_type != null) {
                 fieldNameNode.type = asserted_type;
             }
 
+            // this is deciding if there is a value assigned to this, or if there an
+            // assignment operator
             TokenType isEndOfFieldNameOrValueIsAssigned = this.parseIsEndOfFieldNameOrValueIsAssigned();
+
+            // if it is null that signals there is an assignment operator
             if (isEndOfFieldNameOrValueIsAssigned == null) {
 
                 TokenType assignment_operator = this.parseAssignmentOperator();
+
                 if (assignment_operator == null) {
+                    // overkill but just in case
                     this.reportError("Syntax Error: Unexpected End of Input, expecting '=' Token.",
                             assignment_operator);
-                } else {
+                }
+                    // if there is an assignment operator
                     fieldNameNode.assignment = assignment_operator;
 
                     String fieldNameValue = this.parseFieldNameValue(fieldNameNode.type);
 
+                    // this grabs the most recent value
                     LexerToken lastValue = this.peekLastValue();
+
                     if (lastValue.getType() == TokenType.NUMERIC_TYPE) {
+                        // grabbing the statically typed type
                         TokenType expectedType = fieldNameNode.type;
+                        // if int type, then parse int to see if it is an instance of an integer
                         if (expectedType == TokenType.INT_IDENTIFIER) {
-                            if (Integer.valueOf(lastValue.getValue()) instanceof Integer) {
-                                System.out.print("Integer detected ");
-                                System.out.println(lastValue.getValue());
+                            try {
+                                boolean isInteger = Integer.valueOf(lastValue.getValue()) instanceof Integer;
+                            } catch (NumberFormatException e) {
+                                this.reportError(e.getMessage(), expectedType);
                             }
                         }
                         if (expectedType == TokenType.FLOAT_IDENTIFIER) {
-                            if (Float.valueOf(lastValue.getValue()) instanceof Float) {
-                                System.out.print("Float detected ");
-                                System.out.println(lastValue.getValue());
-                            } 
-                        }
-                        if (expectedType == TokenType.DOUBLE_IDENTIFIER) {
-                            if (Double.valueOf(lastValue.getValue()) instanceof Double) {
-                                System.out.print("Double detected ");
-                                System.out.println(lastValue.getValue());
+                            try {
+                                boolean isFloat = Float.valueOf(lastValue.getValue()) instanceof Float;
+                            } catch (NumberFormatException e) {
+                                this.reportError(e.getMessage(), expectedType);
                             }
                         }
-                        fieldNameNode.value = fieldNameValue;
-                        fieldNameNode.is_assigned_a_value = true;
-                    } else {
-                        fieldNameNode.value = fieldNameValue;
+                        if (expectedType == TokenType.DOUBLE_IDENTIFIER) {
+                            try {
+                                boolean isDouble = Double.valueOf(lastValue.getValue()) instanceof Double;
+                            } catch (NumberFormatException e) {
+                                this.reportError(e.getMessage(), expectedType);
+                            }
+                        }
                     }
-                   TokenType semi = this.parseSemiColon();
-                   fieldNameNode.semi_colon = semi;
-                }
+                    fieldNameNode.value = fieldNameValue;
+                    fieldNameNode.is_assigned_a_value = true;
+                    TokenType semi = this.parseSemiColon();
+                    fieldNameNode.semi_colon = semi;
 
             } else {
+                // this is if there is a semi colon
                 fieldNameNode.semi_colon = isEndOfFieldNameOrValueIsAssigned;
             }
-            //TODO this is where i left off
-            System.out.println(fieldNameNode.toString());
+            // TODO this is where i left off
+            //add it to field name records
+            this.fieldNameRecords.add(fieldNameNode);
+            System.out.println(this.fieldNameRecords.toString());
+            //clear fieldname node for spatial complexity purposes
+            fieldNameNode.clear();
+            //end of else if block if its fieldname
         }
     }
 
@@ -238,13 +270,18 @@ public class ParserMain {
     /*                                                                                                               */
     private NodeTypeEnum parseMethodOrFieldNameDirection() {
         LexerToken token = this.peek();
+        // double colon signal field name instantiation
         TokenType isFieldName = TokenType.DOUBLE_COLON;
+        // left paren signals method declaration
         TokenType isMethodDeclaration = TokenType.LPAREN;
+        // if the current token's type is not equal to the fieldname expected token or
+        // the method declaration's expected token throw the error
         if (token.getType() != isFieldName && token.getType() != isMethodDeclaration) {
             this.reportError(String.format(
                     "Syntax Error: Improper Construction Of Either FieldName or Method Declaration, expected either %s or %s",
                     isFieldName, isMethodDeclaration), isMethodDeclaration);
         }
+        // if it equal to field name increment and return that enum value
         if (token.getType() == isFieldName) {
             this.index++;
             return NodeTypeEnum.FIELD_NAME;
@@ -252,6 +289,7 @@ public class ParserMain {
             this.index++;
             return NodeTypeEnum.METHOD;
         }
+        // catch all error
         this.reportError(String.format(
                 "Syntax Error: Improper Construction Of Either FieldName or Method Declaration, expected either %s or %s",
                 isFieldName, isMethodDeclaration), isMethodDeclaration);
@@ -259,7 +297,11 @@ public class ParserMain {
     }
 
     private TokenType parseAccessModifier(TokenType[] allowedAccessModifiers) {
+        // this grabs the current token with the peek method
         LexerToken token = this.peek();
+        // this loops through the array of TokenType acccess modifiers and sees if the
+        // current token equals one of them, if it does then then it increments the
+        // index and returns access modifier
         for (int i = 0; i < allowedAccessModifiers.length; i++) {
             if (token.getType() == allowedAccessModifiers[i]) {
                 // TODO for AST need to assign access modifier for that portion of the tree
@@ -289,17 +331,29 @@ public class ParserMain {
     }
 
     private String parseIdentifier(TokenType expectedType) {
+        // grabs current token
         LexerToken token = this.peek();
+        // creates pattern to enfore snake or camel Casing
         Pattern firstCharIsLetter = Pattern.compile("[a-z]");
         String firstChar = String.valueOf(token.getValue().charAt(0));
+        // TODO have to throw error for identifiers with anything but numbers letters
+        // and underscores
         Matcher matcher = firstCharIsLetter.matcher(firstChar);
+        // if its not the right type
         if (token.getType() != expectedType) {
             this.reportError(
                     String.format("Compilation Error: Unexpected Token, Received: %s, Expected:", token.getType()),
                     expectedType);
         }
+        // if it doesnt start with lowercase a
         if (!(matcher.lookingAt())) {
             this.reportError("Syntax Error: Identifier Must Start With a lower case letter.", expectedType);
+        }
+        Pattern enforceIdentifierRules = Pattern.compile("^[A-Za-z0-9_]*$");
+        Matcher matcher2 = enforceIdentifierRules.matcher(token.getValue());
+        if (!matcher2.matches()) {
+            this.reportError("Syntax Error: Identifier Must Only Consist of Numbers, Letters, and Underscores.",
+                    expectedType);
         }
         this.index++;
         return token.getValue();
@@ -307,6 +361,8 @@ public class ParserMain {
 
     private TokenType parseFieldNameStaticType(TokenType[] expectedTypes) {
         LexerToken token = this.peek();
+        // if the type that is statically declared is not one of the expected types,
+        // then throw the error else increment
         for (TokenType expectedType : expectedTypes) {
             if (token.getType() == expectedType) {
                 this.index++;
@@ -319,12 +375,16 @@ public class ParserMain {
 
     private TokenType parseIsEndOfFieldNameOrValueIsAssigned() {
         LexerToken token = this.peek();
+        if (token.getType() != TokenType.SEMICOLON && token.getType() != TokenType.ASSIGNMENT) {
+            this.reportError("Syntax Error, Expected Either '=' or ';' not", token.getType());
+        }
         if (token.getType() == TokenType.SEMICOLON) {
             this.index++;
             return TokenType.SEMICOLON;
         }
         return null;
     }
+
     private TokenType parseSemiColon() {
         LexerToken token = this.peek();
         if (token.getType() != TokenType.SEMICOLON) {
@@ -336,6 +396,7 @@ public class ParserMain {
         this.reportError("Syntax Error: Expected ';' Token At End Of Input", TokenType.SEMICOLON);
         return null;
     }
+
     private TokenType parseAssignmentOperator() {
         LexerToken token = this.peek();
         if (token.getType() != TokenType.ASSIGNMENT) {
@@ -352,6 +413,8 @@ public class ParserMain {
         LexerToken token = this.peek();
         String currentTokenValue = token.getValue();
         TokenType currentTokenType = token.getType();
+        // if token is stringtype and it has the asserted type as string then all good
+        // else failure
         if (token.getType() == TokenType.STRING_TYPE) {
             if (expectedTypeOfValue == TokenType.STRING_IDENTIFIER) {
                 this.index++;
@@ -362,6 +425,8 @@ public class ParserMain {
                         expectedTypeOfValue, currentTokenType), currentTokenType);
             }
         }
+        // notice i did not parse whether it was an int float or double, as long as the
+        // identifier was one of the three it returns the currentTokenValue
         if (token.getType() == TokenType.NUMERIC_TYPE) {
             if (expectedTypeOfValue == TokenType.INT_IDENTIFIER || expectedTypeOfValue == TokenType.FLOAT_IDENTIFIER
                     || expectedTypeOfValue == TokenType.DOUBLE_IDENTIFIER) {
@@ -387,6 +452,7 @@ public class ParserMain {
             this.index++;
             return currentTokenValue;
         }
+        // catch all error handler
         this.reportError(String.format(
                 "Syntax Error: Unable To Resolve Type, There is a type mismatch from what type was expected. Expected Type: %s Received Type %s.",
                 expectedTypeOfValue, currentTokenType), currentTokenType);
@@ -413,9 +479,13 @@ public class ParserMain {
     }
 
     private void parsePascalCase(String identifier) {
+        // grabs first letter of given identifier
         String firstLetter = String.valueOf(identifier.charAt(0));
+        // creates regex pattern
         Pattern letterMatcher = Pattern.compile("[A-Z]");
+        // creates matcher to apply patter
         Matcher matcher = letterMatcher.matcher(firstLetter);
+        // if matcher cannot find pattern, then throw an error
         if (!(matcher.lookingAt())) {
             this.reportError("Syntax Error: Illegal Class Name. Must Be Pascal Case And Start With Letters Only",
                     null);
@@ -459,7 +529,12 @@ public class ParserMain {
     /* error handling */
     /*                                                                                           */
     private void reportError(String message, TokenType token) {
-        throw new RuntimeException(String.format(message + " %s", token));
+        try {
+            throw new RuntimeException(String.format(message + " %s", token));
+        } catch (RuntimeException e) {
+            System.out.println(String.format("Error: %s", e.getMessage()));
+            System.exit(0);
+        }
     }
 
     private boolean hasMoreTokens() {
@@ -473,13 +548,15 @@ public class ParserMain {
             return new LexerToken(TokenType.EOF, "EOF");
         }
     }
+
     private LexerToken peekLastValue() {
         if (this.tokenList.size() > 0) {
             return this.tokenList.get(index - 1);
         } else {
-            return new LexerToken(TokenType.EOF,"EOF");
+            return new LexerToken(TokenType.EOF, "EOF");
         }
     }
+
     private void expect(TokenType expectedType) {
         LexerToken token = this.peek();
         if (token.getType() != expectedType) {
