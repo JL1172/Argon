@@ -1,8 +1,8 @@
 package main.Parser;
 
-import main.AST.Node;
 import main.IntermediateASTNodes.FieldNameObjectNode;
 import main.IntermediateASTNodes.MethodDeclarationObjectNode;
+import main.IntermediateASTNodes.MethodParamObjectNode;
 import main.IntermediateASTNodes.NodeTypeEnum;
 import main.IntermediateASTNodes.ObjectNodeTemplate;
 import main.IntermediateASTNodes.TemporalObjectNode;
@@ -10,9 +10,9 @@ import main.Lexer.LexerToken;
 import main.Lexer.LexerMain.TokenType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,9 +52,10 @@ public class ParserMain {
     // ! this is going to keep track of all field names method names and then insert
     // them into a larger container.
     private List<FieldNameObjectNode> fieldNameRecords = new ArrayList<>();
-    private List<MethodDeclarationObjectNode> methodNameRecords = new ArrayList<>();
+    private List<MethodDeclarationObjectNode> methodNodes = new ArrayList<>();
     private List<ObjectNodeTemplate> intermediateASTContainer = new ArrayList<>();
     private TemporalObjectNode temporalContainer;
+    private long startTime;
 
     public ParserMain(List<LexerToken> tokens) {
         matching_symbols.put("}", "{");
@@ -63,6 +64,7 @@ public class ParserMain {
         this.temporalContainer = new TemporalObjectNode(null, null, null, null, null, null, null, null, null);
         this.tokenList = tokens;
         this.index = 0;
+        this.startTime = System.nanoTime();
     }
 
     public void parseClass() {
@@ -161,15 +163,64 @@ public class ParserMain {
             // the semantic method container
             MethodDeclarationObjectNode methodDeclarationNode = new MethodDeclarationObjectNode(
                     this.temporalContainer.nodeType, this.temporalContainer.accessModifier,
-                    this.temporalContainer.keyword, null, null, null, null, this.temporalContainer.identifier, null);
+                    this.temporalContainer.keyword, null, null, null, null, this.temporalContainer.identifier, null,
+                    null, null, null);
 
             // clearing for memory purposes, because i no longer need that space being
             // occupied in memory
             this.temporalContainer.clear();
 
-            // this is just a console log for debugging
-            // todo get rid of this shit this is just for debugging
-            System.out.println(methodDeclarationNode.toString());
+            // now i need to parse
+
+            // calling this method adds paren to stack to keep track of them //if there is a
+            // lparen index gets incremented
+            // start of parameter parsing at '('
+            this.parseLParen();
+
+            TokenType[] allowedTypes = { TokenType.STRING_IDENTIFIER, TokenType.INT_IDENTIFIER,
+                    TokenType.FLOAT_IDENTIFIER, TokenType.DOUBLE_IDENTIFIER, TokenType.BOOLEAN_IDENTIFIER };
+
+            // this loops through the parameters, if there are no parameters this will not
+            // run,
+            List<MethodParamObjectNode> parameterNodes = new ArrayList<>();
+            // now going through parameter body
+            while (this.peek().getType() != TokenType.RPAREN) {
+
+                // paramName
+                String variableName = this.parseIdentifier(TokenType.IDENTIFIER);
+                // ::
+                this.expect(TokenType.DOUBLE_COLON);
+                // type that param name is asserted as
+                TokenType asserted_type = this.parseFieldNameStaticType(allowedTypes);
+                // if all successful, add a node to the parameter nodes list
+                parameterNodes.add(new MethodParamObjectNode(asserted_type, variableName));
+                if (this.peek().getType() == TokenType.COMMA) {
+                    this.expect(TokenType.COMMA);
+                }
+            }
+            // parse end of parameter )
+            this.parseRParen();
+            // add parameter body to method declaration node
+            methodDeclarationNode.parameterBody = parameterNodes;
+
+
+            TokenType[] allowedMethodTypes = { TokenType.STRING_IDENTIFIER, TokenType.INT_IDENTIFIER,
+                TokenType.FLOAT_IDENTIFIER, TokenType.DOUBLE_IDENTIFIER, TokenType.BOOLEAN_IDENTIFIER, TokenType.VOID };
+
+            this.expect(TokenType.DOUBLE_COLON);
+            TokenType assertedMethodType = this.parseFieldNameStaticType(allowedMethodTypes);
+            if (assertedMethodType == null) {
+                this.reportError("Syntax Error: Type Expected For Method.", assertedMethodType);
+            } 
+            methodDeclarationNode.type = assertedMethodType;
+            this.parseLBrace();
+
+            //! THIS IS MY NEXT BIG THING
+            //TODO 
+            //now need to parse actual code, there could be variables, console statements like cout
+
+            //? DEBUG print for debug
+            System.out.println(methodDeclarationNode);
 
         } else if (nodeType == NodeTypeEnum.FIELD_NAME) {
 
@@ -212,57 +263,59 @@ public class ParserMain {
                     this.reportError("Syntax Error: Unexpected End of Input, expecting '=' Token.",
                             assignment_operator);
                 }
-                    // if there is an assignment operator
-                    fieldNameNode.assignment = assignment_operator;
+                // if there is an assignment operator
+                fieldNameNode.assignment = assignment_operator;
 
-                    String fieldNameValue = this.parseFieldNameValue(fieldNameNode.type);
+                String fieldNameValue = this.parseFieldNameValue(fieldNameNode.type);
 
-                    // this grabs the most recent value
-                    LexerToken lastValue = this.peekLastValue();
+                // this grabs the most recent value
+                LexerToken lastValue = this.peekLastValue();
 
-                    if (lastValue.getType() == TokenType.NUMERIC_TYPE) {
-                        // grabbing the statically typed type
-                        TokenType expectedType = fieldNameNode.type;
-                        // if int type, then parse int to see if it is an instance of an integer
-                        if (expectedType == TokenType.INT_IDENTIFIER) {
-                            try {
-                                boolean isInteger = Integer.valueOf(lastValue.getValue()) instanceof Integer;
-                            } catch (NumberFormatException e) {
-                                this.reportError(e.getMessage(), expectedType);
-                            }
-                        }
-                        if (expectedType == TokenType.FLOAT_IDENTIFIER) {
-                            try {
-                                boolean isFloat = Float.valueOf(lastValue.getValue()) instanceof Float;
-                            } catch (NumberFormatException e) {
-                                this.reportError(e.getMessage(), expectedType);
-                            }
-                        }
-                        if (expectedType == TokenType.DOUBLE_IDENTIFIER) {
-                            try {
-                                boolean isDouble = Double.valueOf(lastValue.getValue()) instanceof Double;
-                            } catch (NumberFormatException e) {
-                                this.reportError(e.getMessage(), expectedType);
-                            }
+                if (lastValue.getType() == TokenType.NUMERIC_TYPE) {
+                    // grabbing the statically typed type
+                    TokenType expectedType = fieldNameNode.type;
+                    // if int type, then parse int to see if it is an instance of an integer
+                    if (expectedType == TokenType.INT_IDENTIFIER) {
+                        try {
+                            boolean isInteger = Integer.valueOf(lastValue.getValue()) instanceof Integer;
+                        } catch (NumberFormatException e) {
+                            this.reportError(e.getMessage(), expectedType);
                         }
                     }
-                    fieldNameNode.value = fieldNameValue;
-                    fieldNameNode.is_assigned_a_value = true;
-                    TokenType semi = this.parseSemiColon();
-                    fieldNameNode.semi_colon = semi;
+                    if (expectedType == TokenType.FLOAT_IDENTIFIER) {
+                        try {
+                            boolean isFloat = Float.valueOf(lastValue.getValue()) instanceof Float;
+                        } catch (NumberFormatException e) {
+                            this.reportError(e.getMessage(), expectedType);
+                        }
+                    }
+                    if (expectedType == TokenType.DOUBLE_IDENTIFIER) {
+                        try {
+                            boolean isDouble = Double.valueOf(lastValue.getValue()) instanceof Double;
+                        } catch (NumberFormatException e) {
+                            this.reportError(e.getMessage(), expectedType);
+                        }
+                    }
+                }
+                fieldNameNode.value = fieldNameValue;
+                fieldNameNode.is_assigned_a_value = true;
+                TokenType semi = this.parseSemiColon();
+                fieldNameNode.semi_colon = semi;
 
             } else {
                 // this is if there is a semi colon
                 fieldNameNode.semi_colon = isEndOfFieldNameOrValueIsAssigned;
             }
-            // TODO this is where i left off
-            //add it to field name records
+            // add it to field name records
             this.fieldNameRecords.add(fieldNameNode);
             System.out.println(this.fieldNameRecords.toString());
-            //clear fieldname node for spatial complexity purposes
-            fieldNameNode.clear();
-            //end of else if block if its fieldname
+            // clear fieldname node for spatial complexity purposes
+            // end of else if block if its fieldname
         }
+        //TODO need to add the fieldnames and methods to the intermediate AST list of nodes
+        System.out.println(this.fieldNameRecords.toString());
+        System.out.println(String.format("Time to compile %s ms",
+                TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - this.startTime)));
     }
 
     /*                                                                                                               */
@@ -286,7 +339,6 @@ public class ParserMain {
             this.index++;
             return NodeTypeEnum.FIELD_NAME;
         } else if (token.getType() == isMethodDeclaration) {
-            this.index++;
             return NodeTypeEnum.METHOD;
         }
         // catch all error
@@ -304,7 +356,6 @@ public class ParserMain {
         // index and returns access modifier
         for (int i = 0; i < allowedAccessModifiers.length; i++) {
             if (token.getType() == allowedAccessModifiers[i]) {
-                // TODO for AST need to assign access modifier for that portion of the tree
                 this.index++;
                 return allowedAccessModifiers[i];
             }
@@ -336,7 +387,6 @@ public class ParserMain {
         // creates pattern to enfore snake or camel Casing
         Pattern firstCharIsLetter = Pattern.compile("[a-z]");
         String firstChar = String.valueOf(token.getValue().charAt(0));
-        // TODO have to throw error for identifiers with anything but numbers letters
         // and underscores
         Matcher matcher = firstCharIsLetter.matcher(firstChar);
         // if its not the right type

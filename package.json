@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "javac src/main/Lexer/*.java src/main/Parser/*.java src/main/AST/*.java src/main/IntermediateASTNodes/*.java",
-    "java-l" : "cd src && java main/Lexer/LexerMain"
+    "java" : "cd src && java main/Lexer/LexerMain"
   },
   "keywords": [],
   "author": "",
