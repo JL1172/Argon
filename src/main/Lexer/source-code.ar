@@ -2,6 +2,7 @@ pub cls Main {
     reserved stat const myName:: string = "jacob lang";
     reserved stat const myAge:: int = 22;
     reserved stat const weight:: flt = 228.4;
+    
     pub stat pName:: string = "patrick";
     reserved stat const wifeName:: string = "alaina";
     pub stat mainMethod() :: void {
