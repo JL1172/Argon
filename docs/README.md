@@ -1,61 +1,49 @@
-# Project Overview: Creating an Object-Oriented Programming Language
+# Argon Compiler
 
-## Introduction
-Creating a programming language from scratch is a complex and ambitious project, but it's also a great learning experience. Given your proficiency in JavaScript and TypeScript, and your intermediate level in Java, it's understandable that you might want to leverage that knowledge.
+Argon is a programming language created by [Your Name]. This repository contains the compiler for the Argon language written in Java.
 
-## Step-by-Step Guide
+## Language Guide
 
-### 1. Understanding the Basics
-- **Research**: Start by studying the basics of language design, lexing, parsing, and compilation.
-- **Select Language Features**: Decide what features your language will support (e.g., objects, classes, inheritance, methods, etc.).
+The full language guide detailing the syntax and grammar of Argon can be found in the [docs/language-guide](docs/language-guide) directory.
 
-### 2. Designing the Language
-- **Syntax Design**: Design the syntax of your language. Consider readability, ease of use, and expressiveness.
-- **Semantic Design**: Define the semantics of your language. How will constructs behave during execution?
+## Versioning
 
-### 3. Setting Up the Development Environment
-- **Choose Tools**: Decide on the tools and libraries you'll use (e.g., lexer and parser generators, target language for compilation).
-- **Environment Setup**: Set up your development environment with necessary tools and dependencies.
+Information about versioning features is available in the [docs/versioning](docs/versioning) folder.
 
-### 4. Lexical Analysis (Lexer)
-- **Tokenization**: Write code to break input code into tokens.
-- **Regular Expressions**: Use regular expressions to define token patterns.
-- **Error Handling**: Implement error handling for invalid tokens.
+## Compiler Architecture
 
-### 5. Syntax Analysis (Parser)
-- **Grammar Definition**: Define the grammar of your language (e.g., using BNF or EBNF).
-- **Parsing Algorithm**: Choose a parsing algorithm (e.g., recursive descent, LR parsing).
-- **AST Generation**: Build an Abstract Syntax Tree (AST) from the parsed tokens.
-- **Error Recovery**: Implement mechanisms to recover from syntax errors gracefully.
+Documentation on the overall compiler architecture can be found in the [docs/compiler-architecture](docs/compiler-architecture) directory.
 
-### 6. Semantic Analysis
-- **Type Checking**: Implement type checking for your language constructs.
-- **Scope Resolution**: Resolve variable scopes and namespaces.
-- **Error Reporting**: Provide meaningful error messages for semantic errors.
+## Components
 
-### 7. Code Generation
-- **Intermediate Representation**: Convert the AST into an intermediate representation (IR).
-- **Optimization**: Apply optimizations to the IR if necessary.
-- **Target Code Generation**: Generate code in your target language (e.g., JavaScript, C++, Rust).
+- **Lexer**: The lexer implementation is located in [src/main/Lexer](src/main/Lexer).
+- **Parser**: The parser implementation is located in [src/main/Parser](src/main/Parser).
+- **Intermediate Abstract Syntax Tree (AST) Nodes**: These nodes, which form the hierarchy of the syntax, are located in [src/main/IntermediateASTNodes](src/main/IntermediateASTNodes).
 
-### 8. Testing and Debugging
-- **Unit Testing**: Write tests for each component of your compiler.
-- **Integration Testing**: Test the compiler as a whole with sample programs.
-- **Debugging**: Use debugging tools to identify and fix issues.
+### Abstract Syntax Tree (AST)
 
-### 9. Documentation and Refinement
-- **Documentation**: Document your language syntax, semantics, and usage.
-- **Refinement**: Refactor code and improve efficiency where necessary.
-- **Community Engagement**: Share your language with others, gather feedback, and iterate.
+The AST is structured as follows:
 
-## Advice
-- **Start Simple**: Begin with a minimal viable language and gradually add features.
-- **Understand the Steps**: Focus on understanding each step thoroughly before moving on to the next.
-- **Leverage Familiarity**: Consider compiling to a language you're familiar with initially (e.g., JavaScript), then switch to lower-level languages (e.g., C++, Rust) once you're comfortable with the process.
+- **Class Declaration Node**: Represents a class declaration. It contains lists of method and field name nodes.
+  - **Method Node**: Represents a method declaration. It contains lists of statement nodes and parameter nodes.
+  - **Parameter Node**: Represents a method parameter.
 
-## Considerations
-- **Language Design**: Ensure your language is consistent, expressive, and user-friendly.
-- **Performance**: Consider performance implications at each stage of compilation.
-- **Error Handling**: Design clear and informative error messages for easier debugging.
-- **Interoperability**: Think about how your language will interact with existing libraries and ecosystems.
-- **Community Support**: Building a community around your language can aid in its adoption and improvement.
+The parsing method utilizes a recursive descent approach.
+
+## Current Status
+
+This project is currently being developed solo. The parsing functionality has been completed, achieving consistent lexing and parsing times of 3-6ms. The focus now is on code generation and optimization.
+
+## Future Work
+
+Future versions of Argon may include additional features and optimizations.
+
+## About Argon
+
+Argon is a minimalistic programming language designed for simplicity and ease of use.
+
+## Author
+
+This compiler for Argon is authored by [Jacob].
+
+Feel free to contribute to the project or provide feedback. Happy coding!
