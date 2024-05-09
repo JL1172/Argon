@@ -1,6 +1,6 @@
 # Argon Compiler
 
-Argon is a programming language created by [Your Name]. This repository contains the compiler for the Argon language written in Java.
+Argon is a programming language created by Jacob. This repository contains the compiler for the Argon language written in Java.
 
 ## Language Guide
 
